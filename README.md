@@ -95,6 +95,12 @@ pnpm zip:firefox  # Firefox MV2 (.output/isekai-tab-0.1.0-firefox.zip)
 
 ---
 
+## 🍡 Contributing
+
+Contributions of all kinds are welcome! Check out the [Contributing Guide](CONTRIBUTING.md) to set up your local environment and view our [Code of Conduct](CODE_OF_CONDUCT.md).
+
+---
+
 ## 🎋 License
 
 Distributed under the [GPL-3.0-or-later](LICENSE) License.
