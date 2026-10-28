@@ -13,6 +13,7 @@
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
     "check": "svelte-check --tsconfig ./tsconfig.json",
+    "icons": "python3 scripts/patch-icons.py",
     "postinstall": "wxt prepare"
   },
   "dependencies": {

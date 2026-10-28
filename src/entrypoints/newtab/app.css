@@ -1,4 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 :root {
+  /* Surfaces & Backgrounds */
+  --bg-primary: #16171b;
+  --bg-secondary: #1c1d22;
+  --bg-surface: #222329;
+  --bg-glass: rgba(255, 255, 255, 0.04);
+
+  /* Text Hierarchy */
+  --text-main: #f3f4f6;
+  --text-muted: rgba(255, 255, 255, 0.65);
+  --text-faint: rgba(255, 255, 255, 0.45);
+
+  /* Dynamic Accent */
+  --accent: #ffffff;
+  --accent-rgb: 255, 255, 255;
+  --accent-contrast: #0a0b0e;
+  --accent-subtle: rgba(var(--accent-rgb), 0.14);
+  --accent-glow: rgba(var(--accent-rgb), 0.35);
+
+  /* Solstice Glass & Specular Lights */
+  --border-glass: rgba(255, 255, 255, 0.1);
+  --glass-border-highlight: 1px solid rgba(255, 255, 255, 0.2);
+  --glass-specular-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  --glass-surface: rgba(18, 20, 26, 0.65);
+
+  /* Apple-Style High-Performance Dark Glass */
+  --apple-glass-bg: rgba(18, 21, 28, 0.72);
+  --apple-glass-border: rgba(255, 255, 255, 0.12);
+  --apple-glass-border-top: rgba(255, 255, 255, 0.26);
+  --apple-glass-specular: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  --apple-glass-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --apple-glass-blur: blur(20px) saturate(190%);
+
+  /* Solstice Neutral Dark-Glass Buttons (Crisp, optical frosted glass) */
+  --glass-btn-bg: rgba(18, 22, 32, 0.64);
+  --glass-btn-color: #ffffff;
+  --glass-btn-bg-hover: rgba(26, 32, 46, 0.82);
+  --glass-btn-color-hover: #ffffff;
+  --glass-btn-border: rgba(255, 255, 255, 0.22);
+  --glass-btn-border-top: rgba(255, 255, 255, 0.48);
+  --glass-btn-border-bottom: rgba(0, 0, 0, 0.2);
+  --glass-btn-shadow: 0 6px 22px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  --glass-btn-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
+  --glass-btn-blur: blur(22px) saturate(190%);
+
+  /* Active / Toggled ON Glass Button (Frosted white glass with specular rim and 3D bevel) */
+  --glass-btn-active-bg: rgba(255, 255, 255, 0.88);
+  --glass-btn-active-color: #0a0b0e;
+  --glass-btn-active-border: rgba(255, 255, 255, 0.7);
+  --glass-btn-active-border-top: #ffffff;
+  --glass-btn-active-border-bottom: rgba(0, 0, 0, 0.22);
+  --glass-btn-active-shadow: 0 6px 24px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 #ffffff, inset 0 -1px 2px rgba(0, 0, 0, 0.18);
+
+  /* Corner Radii */
+  --radius-pill: 999px;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 8px;
+
+  /* Typography */
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Wallpaper Dim Level */
+  --wallpaper-dim: 0.35;
+
   color-scheme: dark;
 }
 
@@ -12,8 +80,106 @@ html, body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background-color: #0c0e14;
-  color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   user-select: none;
 }
+
+#app {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Tactile Spring micro-interactions on click/tap only (NO hover translate) */
+.btn-spring {
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-spring:active {
+  transform: scale(0.94) !important;
+}
+
+.pill-spring {
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.pill-spring:active {
+  transform: scale(0.96) !important;
+}
+
+/* Solstice Pill Button */
+.solstice-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 18px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: none;
+  border-top: var(--glass-border-highlight);
+  border-radius: var(--radius-pill);
+  color: #f3f4f6;
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), var(--glass-specular-shadow);
+  outline: none;
+}
+
+.solstice-pill-btn:hover {
+  color: #ffffff;
+}
+
+.solstice-pill-btn.active {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 16px rgba(var(--accent-rgb), 0.3);
+}
+
+.solstice-pill-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Glass Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border-width: 0 !important;
+  display: none !important;
+}
+

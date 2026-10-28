@@ -1,0 +1,132 @@
+import type { WallpaperItem, SortFilter, TimeFilter } from '../types';
+
+interface MoebooruPost {
+  id: number;
+  tags: string;
+  author: string;
+  source?: string;
+  score: number;
+  width: number;
+  height: number;
+  file_url: string;
+  jpeg_url?: string;
+  sample_url?: string;
+  preview_url?: string;
+  rating: 's' | 'q' | 'e';
+}
+
+function cleanBooruTags(rawTags: string): string {
+  const ignoredPrefixes = ['tagme', 'bad_id', 'duplicate', 'wallpaper', 'highres'];
+  const words = rawTags
+    .split(/\s+/)
+    .filter((t) => !ignoredPrefixes.includes(t.toLowerCase()) && !t.includes(':'))
+    .map((w) => w.replace(/_/g, ' '));
+
+  // Take the first 2-3 most descriptive tags for the title
+  const titleWords = words.slice(0, 3);
+  if (titleWords.length === 0) return 'Anime Artwork';
+
+  return titleWords
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' • ');
+}
+
+async function fetchFromMoebooru(
+  endpointUrl: string,
+  siteName: string,
+  isNsfw = false
+): Promise<WallpaperItem[]> {
+  try {
+    const res = await fetch(endpointUrl);
+    if (!res.ok) {
+      console.warn(`${siteName} API returned ${res.status}`);
+      return [];
+    }
+
+    const posts: MoebooruPost[] = await res.json();
+    if (!Array.isArray(posts)) return [];
+
+    return posts
+      .filter((p) => p.width && p.height && (p.jpeg_url || p.file_url))
+      .map((p) => {
+        const is4K = p.width >= 3840;
+        const is2K = p.width >= 2560 && !is4K;
+        const qualityTag = is4K ? '4K UHD' : is2K ? '2K QHD' : 'FHD';
+        const cleanRes = `${p.width} × ${p.height} • ${qualityTag}`;
+
+        const title = cleanBooruTags(p.tags);
+        const imageUrl = p.jpeg_url || p.file_url;
+        const thumb = p.sample_url || p.preview_url || imageUrl;
+        const isPostNsfw = p.rating !== 's' || isNsfw;
+
+        let sourceLink = p.source;
+        if (!sourceLink || !sourceLink.startsWith('http')) {
+          sourceLink = siteName.toLowerCase().includes('yande')
+            ? `https://yande.re/post/show/${p.id}`
+            : `https://konachan.net/post/show/${p.id}`;
+        }
+
+        return {
+          id: `${siteName.toLowerCase().slice(0, 2)}-${p.id}`,
+          title,
+          author: p.author ? `${p.author} (${siteName})` : siteName,
+          res: cleanRes,
+          url: imageUrl,
+          thumbnailUrl: thumb,
+          sourceUrl: sourceLink,
+          subreddit: `${siteName} ${isPostNsfw ? 'Waifu' : 'Anime'}`,
+          favorite: false,
+          isNsfw: isPostNsfw,
+        };
+      });
+  } catch (err) {
+    console.warn(`Error fetching ${siteName}:`, err);
+    return [];
+  }
+}
+
+export async function fetchKonachanWallpapers(options: {
+  sort?: SortFilter;
+  time?: TimeFilter;
+  nsfw?: boolean;
+}): Promise<WallpaperItem[]> {
+  const { sort = 'hot', nsfw = false } = options;
+  const page = sort === 'new' ? 1 : Math.floor(Math.random() * 4) + 1;
+
+  let orderTag = 'order:score';
+  if (sort === 'new') orderTag = 'order:id';
+  else if (sort === 'hot' || sort === 'relevance') orderTag = 'order:score';
+
+  const items: WallpaperItem[] = [];
+
+  if (nsfw) {
+    // Yande.re has rich 4K waifu art with full NSFW support
+    const yandeUrl = `https://yande.re/post.json?limit=50&page=${page}&tags=rating:questionable+width:>=1920+${orderTag}`;
+    const nsfwItems = await fetchFromMoebooru(yandeUrl, 'Yande.re', true);
+    items.push(...nsfwItems);
+  } else {
+    // SFW anime wallpapers from Konachan and Yande.re
+    const [kcItems, ydItems] = await Promise.all([
+      fetchFromMoebooru(
+        `https://konachan.net/post.json?limit=40&page=${page}&tags=rating:safe+width:>=1920+${orderTag}`,
+        'Konachan',
+        false
+      ),
+      fetchFromMoebooru(
+        `https://yande.re/post.json?limit=30&page=${page}&tags=rating:safe+width:>=1920+${orderTag}`,
+        'Yande.re',
+        false
+      ),
+    ]);
+
+    items.push(...kcItems, ...ydItems);
+  }
+
+  // Shuffle for fresh variety
+  for (let i = items.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [items[i], items[j]] = [items[j]!, items[i]!];
+  }
+
+  return items;
+}
