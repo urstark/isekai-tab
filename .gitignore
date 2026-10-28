@@ -1,0 +1,20 @@
+# Build output
+.output
+.wxt
+
+# Dependencies
+node_modules
+
+# Reference projects
+atarashii-tab/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Environment & editor
+.DS_Store
+*.local
+.vscode/*
+!.vscode/extensions.json
