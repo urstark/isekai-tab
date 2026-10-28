@@ -64,7 +64,6 @@ export async function fetchWallhavenWallpapers(options: {
     const qualityTag = is4K ? '4K UHD' : is2K ? '2K QHD' : 'FHD';
     const cleanRes = `${item.dimension_x} × ${item.dimension_y} • ${qualityTag}`;
 
-    // Extract original art source (Pixiv, ArtStation, Twitter, DeviantArt, etc.)
     const rawSource = item.source || '';
     let platform = 'Wallhaven';
     if (rawSource.includes('pixiv.net')) platform = 'Pixiv';
@@ -88,7 +87,6 @@ export async function fetchWallhavenWallpapers(options: {
     };
   });
 
-  // Shuffle items for variety
   for (let i = items.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [items[i], items[j]] = [items[j]!, items[i]!];

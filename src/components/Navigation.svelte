@@ -12,7 +12,7 @@
 </script>
 
 <div class="nav-container">
-  <!-- Minimalist Filter Links (fluid pixel-by-pixel collapse) -->
+
   <div class="filter-group" class:collapsed={store.incognito}>
     <div class="filter-row">
       {#each sortOptions as s, idx}
@@ -45,11 +45,10 @@
     {/if}
   </div>
 
-  <!-- Action Buttons Arranged in 2 Rows -->
   <div class="actions-wrapper">
-    <!-- Row 1: Wallpaper Actions (smoothly collapses vertically in incognito) -->
+
     <div class="btn-row row-primary" class:collapsed={store.incognito}>
-      <!-- NSFW Button -->
+
       <button
         type="button"
         class="nav-btn pill-spring"
@@ -63,7 +62,6 @@
         <FlameLinear size={15} />
       </button>
 
-      <!-- PIN Button -->
       <button
         type="button"
         class="nav-btn pill-spring"
@@ -81,7 +79,6 @@
         {/if}
       </button>
 
-      <!-- REROLL Button -->
       <button
         type="button"
         class="nav-btn pill-spring"
@@ -98,9 +95,8 @@
       </button>
     </div>
 
-    <!-- Row 2: Privacy Controls -->
     <div class="btn-row row-secondary">
-      <!-- INCOGNITO Button -->
+
       <button
         type="button"
         class="nav-btn pill-spring"

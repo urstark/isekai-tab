@@ -16,15 +16,14 @@
 </script>
 
 <footer class="footer-bar" aria-label="Footer and navigation">
-  <!-- Left: Attribution & Loader (smooth loading toggle) -->
+
   <div class="attr-side" class:collapsed={store.incognito || !store.settings.showAttribution}>
     {#if !store.incognito}
-      <!-- When loading: show strictly the minimal pulsing loader -->
+
       <div class="loader-wrap" class:visible={store.isLoading}>
         <Loader size={20} color="rgba(255, 255, 255, 0.85)" />
       </div>
 
-      <!-- When loaded: smoothly show attribution text -->
       <div class="attr-text" class:visible={!store.isLoading && store.settings.showAttribution && !!store.currentWallpaper.url}>
         <p class="attr-title">
           Image from
@@ -40,7 +39,6 @@
     {/if}
   </div>
 
-  <!-- Center Proximity Trigger Zone & Dock (Optional) -->
   {#if store.settings.showBottomMenuBtn}
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
@@ -68,7 +66,6 @@
     </div>
   {/if}
 
-  <!-- Right: Project info (Created with love & version link) -->
   <div class="project-side" class:hidden={store.incognito || !store.settings.showVersionBadge}>
     <p class="project-text">
       <span>Created with</span>
@@ -177,8 +174,6 @@
   .attr-title a:hover {
     color: var(--accent);
   }
-
-
 
   .dock-proximity-zone {
     position: absolute;

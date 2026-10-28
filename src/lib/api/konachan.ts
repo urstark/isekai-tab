@@ -22,7 +22,6 @@ function cleanBooruTags(rawTags: string): string {
     .filter((t) => !ignoredPrefixes.includes(t.toLowerCase()) && !t.includes(':'))
     .map((w) => w.replace(/_/g, ' '));
 
-  // Take the first 2-3 most descriptive tags for the title
   const titleWords = words.slice(0, 3);
   if (titleWords.length === 0) return 'Anime Artwork';
 
@@ -100,12 +99,10 @@ export async function fetchKonachanWallpapers(options: {
   const items: WallpaperItem[] = [];
 
   if (nsfw) {
-    // Yande.re has rich 4K waifu art with full NSFW support
     const yandeUrl = `https://yande.re/post.json?limit=50&page=${page}&tags=rating:questionable+width:>=1920+${orderTag}`;
     const nsfwItems = await fetchFromMoebooru(yandeUrl, 'Yande.re', true);
     items.push(...nsfwItems);
   } else {
-    // SFW anime wallpapers from Konachan and Yande.re
     const [kcItems, ydItems] = await Promise.all([
       fetchFromMoebooru(
         `https://konachan.net/post.json?limit=40&page=${page}&tags=rating:safe+width:>=1920+${orderTag}`,
@@ -122,7 +119,6 @@ export async function fetchKonachanWallpapers(options: {
     items.push(...kcItems, ...ydItems);
   }
 
-  // Shuffle for fresh variety
   for (let i = items.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [items[i], items[j]] = [items[j]!, items[i]!];

@@ -13,14 +13,12 @@
     store.applyTheme();
 
     const handleKeydown = (e: KeyboardEvent) => {
-      // Allow Ctrl+K or Cmd+K even if other modifiers aren't active
       if ((e.ctrlKey || e.metaKey) && e.code === 'KeyK') {
         e.preventDefault();
         store.toggleCommandPalette();
         return;
       }
 
-      // Don't intercept when user is typing in an input
       if (
         e.target instanceof HTMLInputElement ||
         e.target instanceof HTMLTextAreaElement ||
@@ -32,7 +30,6 @@
         return;
       }
 
-      // If Command Palette is open, let its own handlers take arrow keys/enter
       if (store.isCommandPaletteOpen) {
         if (e.code === 'Escape') {
           e.preventDefault();
@@ -83,16 +80,14 @@
 </script>
 
 <main class="page-container">
-  <!-- Background Wallpaper with Incognito Privacy & Aura -->
+
   <Wallpaper />
 
-  <!-- Ambient Vignette Overlays for Contrast over Bright Wallpapers -->
   <div class="ambient-vignette-top" class:hidden={store.incognito || !store.currentWallpaper.url}></div>
   <div class="ambient-vignette-bottom" class:hidden={store.incognito || !store.currentWallpaper.url}></div>
 
-  <!-- Main App Frame -->
   <div class="app-frame">
-    <!-- Top Header -->
+
     <header class="app-header">
       <div class="header-left">
         {#if store.settings.clockPosition === 'left'}
@@ -107,7 +102,6 @@
       </div>
     </header>
 
-    <!-- Center Hero Clock (when clockPosition is 'center') -->
     {#if store.settings.clockPosition === 'center'}
       <div
         class="hero-clock-center"
@@ -117,21 +111,17 @@
       </div>
     {/if}
 
-    <!-- Bottom Footer -->
     <div class="footer-wrap">
       <Footer />
     </div>
   </div>
 
-  <!-- Waybar Floating Quick HUD (Right edge rail) -->
   {#if store.settings.quickHudPosition === 'right'}
     <WaybarHud />
   {/if}
 
-  <!-- Keyboard-First Rofi / Wofi Command Palette -->
   <CommandPalette />
 
-  <!-- Gallery & Settings Drawer -->
   <Drawer />
 </main>
 

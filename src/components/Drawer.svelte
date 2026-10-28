@@ -61,7 +61,6 @@
       try {
         target?.releasePointerCapture(ev.pointerId);
       } catch {
-        // Safe fallback
       }
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerup', onPointerUp);
@@ -94,7 +93,7 @@
 </script>
 
 {#if store.isMenuVisible}
-  <!-- Backdrop click catcher with smooth fade in/out -->
+
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
@@ -103,7 +102,6 @@
     transition:fade={{ duration: 220 }}
   ></div>
 
-  <!-- Drawer Panel with smooth sliding up and sliding down animation -->
   <div
     class="drawer-panel"
     class:settings-mode={store.activeTab === 'settings' || store.activeTab === 'shortcuts'}
@@ -114,7 +112,7 @@
     aria-label="Menu drawer"
     transition:fly={{ y: 90, duration: 320, easing: cubicOut }}
   >
-    <!-- Drawer Header / Drag Handle -->
+
     <div class="drawer-topbar">
       <div
         class="drawer-handle-zone"
@@ -138,7 +136,7 @@
     </div>
 
     <div class="drawer-body">
-      <!-- Sidebar Tabs -->
+
       <aside class="drawer-sidebar">
         <button
           type="button"
@@ -185,10 +183,9 @@
         </button>
       </aside>
 
-      <!-- Content Area -->
       <div class="drawer-content">
         {#if store.activeTab === 'history'}
-          <!-- HISTORY PANEL -->
+
           <div class="tab-panel history-view">
             <div class="history-toolbar">
               <div class="toolbar-title-group">
@@ -220,7 +217,6 @@
               </div>
             </div>
 
-            <!-- Wallpaper Cards Grid -->
             {#if filteredHistory.length === 0}
               <div class="empty-state">
                 {#if store.showFavoritesOnly}
@@ -259,7 +255,6 @@
                         {/if}
                       </div>
 
-                      <!-- Card Quick Actions -->
                       <div class="card-quick-actions" onclick={(e) => e.stopPropagation()}>
                         <button
                           type="button"
@@ -309,9 +304,9 @@
             {/if}
           </div>
         {:else if store.activeTab === 'settings'}
-          <!-- SETTINGS PANEL -->
+
           <div class="tab-panel settings-view">
-            <!-- Accent Color Section -->
+
             <section class="settings-group">
               <div class="group-header">
                 <div class="header-left-wrap">
@@ -337,7 +332,6 @@
                   ></button>
                 {/each}
 
-                <!-- Custom Color Input -->
                 <label class="custom-color-btn btn-spring" title="Choose Custom Color">
                   <PipetteLinear size={15} />
                   <input
@@ -351,7 +345,6 @@
               </div>
             </section>
 
-            <!-- Wallpaper Dim Opacity Section -->
             <section class="settings-group">
               <div class="group-header">
                 <div class="header-left-wrap">
@@ -375,7 +368,6 @@
               </div>
             </section>
 
-            <!-- Wallpaper Feed Source Section -->
             <section class="settings-group">
               <div class="group-header">
                 <div class="header-left-wrap">
@@ -455,7 +447,6 @@
               {/if}
             </section>
 
-            <!-- Typography & Custom Fonts Section -->
             <section class="settings-group">
               <div class="group-header">
                 <div class="header-left-wrap">
@@ -469,7 +460,6 @@
                 </div>
               </div>
 
-              <!-- Clock & Heading Font Chips -->
               <div class="typography-block">
                 <div class="sub-label-row">
                   <span class="sub-label">Clock & Heading Font</span>
@@ -493,7 +483,6 @@
                 </div>
               </div>
 
-              <!-- Interface / Body Font -->
               <div class="typography-block">
                 <div class="sub-label-row">
                   <span class="sub-label">Interface & Body Font</span>
@@ -513,7 +502,6 @@
                 </div>
               </div>
 
-              <!-- Custom Font Uploader -->
               <div class="custom-font-uploader">
                 <div class="uploader-header-row">
                   <span class="sub-label">Upload Local Font (.ttf, .otf, .woff, .woff2)</span>
@@ -544,7 +532,6 @@
               </div>
             </section>
 
-            <!-- Clock & Display Customization Section -->
             <section class="settings-group">
               <div class="group-header">
                 <div class="header-left-wrap">
@@ -642,7 +629,6 @@
               </div>
             </section>
 
-            <!-- Interface & Dock Layout Section -->
             <section class="settings-group">
               <div class="group-header">
                 <div class="header-left-wrap">
@@ -738,7 +724,6 @@
               </div>
             </section>
 
-            <!-- FX & Animations Section -->
             <section class="settings-group">
               <div class="group-header">
                 <div class="header-left-wrap">
@@ -784,7 +769,6 @@
               </div>
             </section>
 
-            <!-- Reset All Settings Section -->
             <section class="settings-group reset-group">
               <div class="group-header">
                 <div class="header-left-wrap">
@@ -812,7 +796,7 @@
             </section>
           </div>
         {:else if store.activeTab === 'shortcuts'}
-          <!-- SHORTCUTS PANEL -->
+
           <div class="tab-panel shortcuts-view">
             <div class="shortcuts-toolbar">
               <div class="toolbar-title-group">
@@ -830,7 +814,6 @@
               </button>
             </div>
 
-            <!-- Wallpaper Actions -->
             <section class="settings-group">
               <div class="group-header">
                 <div class="header-left-wrap">
@@ -856,7 +839,6 @@
               </div>
             </section>
 
-            <!-- Privacy & Interface -->
             <section class="settings-group">
               <div class="group-header">
                 <div class="header-left-wrap">
@@ -887,7 +869,7 @@
             </section>
           </div>
         {:else if store.activeTab === 'custom'}
-          <!-- CUSTOM WALLPAPERS PANEL -->
+
           <div class="tab-panel custom-view">
             <div class="history-toolbar">
               <div class="toolbar-title-group">
@@ -896,7 +878,6 @@
               </div>
             </div>
 
-            <!-- Upload Controls Card -->
             <div class="custom-inputs-card">
               <div class="upload-buttons-row">
                 <label class="upload-action-btn pill-spring">
@@ -932,7 +913,6 @@
                 </label>
               </div>
 
-              <!-- Add via URL Form -->
               <form
                 class="add-url-form"
                 onsubmit={(e) => {
@@ -965,7 +945,6 @@
               </form>
             </div>
 
-            <!-- Wallpapers Grid or Empty State -->
             {#if store.customWallpapers.length === 0}
               <div class="custom-empty-state">
                 <FolderWithFilesLinear size={48} />

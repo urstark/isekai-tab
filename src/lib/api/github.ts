@@ -1,4 +1,4 @@
-import type { WallpaperItem } from '../types';
+import type { WallpaperItem, GitHubRepoId } from '../types';
 import cozyPathsFallback from './cozypixels-paths.json';
 import laustoicPathsFallback from './laustoic-paths.json';
 
@@ -115,8 +115,6 @@ async function getRepoImagePaths(
 
   return fallbackPaths;
 }
-
-import type { WallpaperItem, GitHubRepoId } from '../types';
 
 export async function fetchGitHubWallpapers(enabledRepos?: GitHubRepoId[]): Promise<WallpaperItem[]> {
   const activeRepos = new Set(

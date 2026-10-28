@@ -29,7 +29,6 @@
   ];
 </script>
 
-<!-- Proximity zone hugging the right edge of the screen -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <aside
   class="waybar-proximity-zone"
@@ -38,7 +37,7 @@
   aria-label="Floating Waybar Quick HUD"
 >
   <div class="waybar-hud-wrap" class:peeking={!shouldRevealHud}>
-    <!-- Flyout Filters Drawer (slides out right-to-left) -->
+
     {#if isFlyoutOpen && !store.incognito}
       <div class="waybar-flyout glass-surface" role="region" aria-label="Filters and sources flyout">
         <div class="flyout-header">
@@ -53,7 +52,6 @@
           </button>
         </div>
 
-        <!-- Feed Sources (Multi-Select) -->
         <div class="flyout-group">
           <div class="flyout-label-row">
             <span class="flyout-label">Sources</span>
@@ -103,7 +101,6 @@
           </div>
         </div>
 
-        <!-- GitHub Sub-Collections (Nordic, Gruvbox, Aesthetic, CozyPixels) -->
         {#if store.isSourceEnabled('cozypixels')}
           <div class="flyout-group github-subgroup">
             <div class="flyout-label-row">
@@ -126,7 +123,6 @@
           </div>
         {/if}
 
-        <!-- Sort Options -->
         <div class="flyout-group">
           <span class="flyout-label">Sort</span>
           <div class="flyout-pills-row">
@@ -143,7 +139,6 @@
           </div>
         </div>
 
-        <!-- Time Options (when not 'new') -->
         {#if store.sort !== 'new'}
           <div class="flyout-group">
             <span class="flyout-label">Timeframe</span>
@@ -164,9 +159,8 @@
       </div>
     {/if}
 
-    <!-- Unified Single Waybar Rail Capsule -->
     <div class="waybar-rail glass-capsule">
-      <!-- Reroll Button -->
+
       <button
         type="button"
         class="hud-btn pill-spring"
@@ -181,7 +175,6 @@
         <span class="hud-tooltip">Reroll <kbd>R</kbd></span>
       </button>
 
-      <!-- Pin Button -->
       <button
         type="button"
         class="hud-btn pill-spring"
@@ -198,7 +191,6 @@
         <span class="hud-tooltip">{store.pinned ? 'Unpin' : 'Pin'} <kbd>P</kbd></span>
       </button>
 
-      <!-- NSFW Toggle -->
       <button
         type="button"
         class="hud-btn pill-spring"
@@ -211,7 +203,6 @@
         <span class="hud-tooltip">NSFW <kbd>N</kbd></span>
       </button>
 
-      <!-- Incognito Button -->
       <button
         type="button"
         class="hud-btn pill-spring"
@@ -223,10 +214,8 @@
         <span class="hud-tooltip">Incognito <kbd>I</kbd></span>
       </button>
 
-      <!-- Subtle separator within the single capsule -->
       <div class="hud-divider"></div>
 
-      <!-- Command Palette Launcher -->
       <button
         type="button"
         class="hud-btn pill-spring"
@@ -237,7 +226,6 @@
         <span class="hud-tooltip">Rofi / Command <kbd>Space</kbd></span>
       </button>
 
-      <!-- Feed Filters Flyout Trigger -->
       {#if !store.incognito}
         <button
           type="button"
@@ -255,7 +243,6 @@
         </button>
       {/if}
 
-      <!-- Open Drawer / Custom Wallpapers -->
       <button
         type="button"
         class="hud-btn pill-spring"

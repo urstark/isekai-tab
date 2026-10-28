@@ -15,13 +15,13 @@ import {
 } from './fonts';
 
 export const COLOR_PRESETS = [
-  '#ffffff', // Solstice Crisp White
-  '#38bdf8', // Solstice Sapphire
-  '#a855f7', // Solstice Violet
-  '#2ee59d', // Solstice Emerald
-  '#f59e0b', // Solstice Amber
-  '#f43f5e', // Solstice Rose
-  '#ff6b6b', // Coral Neon
+  '#ffffff',
+  '#38bdf8',
+  '#a855f7',
+  '#2ee59d',
+  '#f59e0b',
+  '#f43f5e',
+  '#ff6b6b',
 ];
 
 export const BRAND_FALLBACK_WALLPAPER: WallpaperItem = {
@@ -110,16 +110,13 @@ class Store {
   wallpaperQueue = $state<WallpaperItem[]>([]);
   customWallpapers = $state<WallpaperItem[]>([]);
 
-  // Current active wallpaper
   currentWallpaper = $state<WallpaperItem>(BRAND_FALLBACK_WALLPAPER);
   history = $state<WallpaperItem[]>([]);
   historyIndex = $state<number>(0);
 
-  // Filters
   sort = $state<SortFilter>('hot');
   time = $state<TimeFilter>('week');
 
-  // Modes & Toggles
   isLoading = $state<boolean>(true);
   nsfw = $state<boolean>(false);
   pinned = $state<boolean>(false);
@@ -129,17 +126,14 @@ class Store {
   isRolling = $state<boolean>(false);
   showRollOverlay = $state<boolean>(false);
 
-  // Drawer tab
   activeTab = $state<MenuTab>('history');
   showFavoritesOnly = $state<boolean>(false);
 
-  // Theme & Appearance
   theme = $state<AppTheme>({
     primary: '#ffffff',
     backgroundDim: 0.32,
   });
 
-  // Settings
   settings = $state<AppSettings>({
     soundEffects: true,
     rerollFlash: true,
@@ -167,7 +161,6 @@ class Store {
 
     let didRotateOnStart = false;
 
-    // If not pinned, consume next fresh wallpaper from queue that matches enabled sources
     if (!this.pinned) {
       this.purgeDisabledSourceItems();
       let nextItem: WallpaperItem | undefined;
@@ -199,7 +192,6 @@ class Store {
     this.isHydrated = true;
     this.saveState();
 
-    // Load custom fonts and custom wallpapers from IndexedDB
     loadAndApplyCustomFont().then((name) => {
       if (name && this.settings.fontHeading === 'custom') {
         this.applyTheme();
@@ -207,7 +199,6 @@ class Store {
     });
     this.loadCustomWallpapers();
 
-    // Force live fetch if wallpaper was not rotated, is brand fallback/empty, or from disabled source
     const needsImmediateRotation =
       !didRotateOnStart ||
       !this.currentWallpaper.url ||
@@ -336,7 +327,6 @@ class Store {
     root.style.setProperty('--accent-contrast', luminance > 0.6 ? '#0a0b0e' : '#ffffff');
     root.style.setProperty('--wallpaper-dim', String(this.theme.backgroundDim));
 
-    // Apply font preferences
     const headingPreset = PRESET_FONTS.find((f) => f.id === this.settings.fontHeading);
     if (this.settings.fontHeading === 'custom' && this.settings.customFontHeadingName) {
       const cleanName = this.settings.customFontHeadingName
@@ -390,7 +380,6 @@ class Store {
       try {
         thumbUrl = await createThumbnailFromFile(file);
       } catch {
-        // Safe fallback
       }
 
       await saveCustomWallpaper({
@@ -496,7 +485,6 @@ class Store {
         nsfw: this.nsfw,
       });
 
-      // Strictly filter to enabled sources, but accept fallback items if target sources yielded 0
       let validItems = items.filter((x) => this.isItemSourceEnabled(x) && !!x.url);
       if (validItems.length === 0 && items.length > 0) {
         validItems = items.filter((x) => !!x.url);
@@ -520,7 +508,6 @@ class Store {
             }
           }
         } else {
-          // Background replenishment
           const existingIds = new Set([
             this.currentWallpaper.id,
             ...this.history.map((x) => x.id),
@@ -674,14 +661,11 @@ class Store {
       }, 700);
     }
 
-    // Always purge any items from disabled sources before consuming from queue
     this.purgeDisabledSourceItems();
 
-    // Refill or fetch directly if queue is exhausted
     if (this.wallpaperQueue.length === 0) {
       await this.loadLiveWallpapers(true);
     } else {
-      // Refill queue if running low
       if (this.wallpaperQueue.length <= 4 && !this.isFetching) {
         this.loadLiveWallpapers(false);
       }
@@ -792,11 +776,9 @@ class Store {
   }
 
   resetSettings() {
-    // 1. Theme & Appearance
     this.theme.primary = '#ffffff';
     this.theme.backgroundDim = 0.32;
 
-    // 2. Display & Clock Settings
     this.settings.clock24h = false;
     this.settings.showSeconds = false;
     this.settings.showTime = true;
@@ -816,23 +798,19 @@ class Store {
     this.settings.fontBody = 'plus-jakarta';
     this.settings.customFontHeadingName = undefined;
 
-    // 3. Picture Filters
     this.sort = 'hot';
     this.time = 'week';
 
-    // 4. Toggles & Modes
     this.nsfw = false;
     this.pinned = false;
     this.incognito = false;
     this.showFavoritesOnly = false;
 
-    // 5. Wallpaper & History State
     this.history = [];
     this.currentWallpaper = BRAND_FALLBACK_WALLPAPER;
     this.historyIndex = 0;
     this.wallpaperQueue = [];
 
-    // 6. Apply visual theme & persist immediately
     this.applyTheme();
     this.saveState();
     this.loadLiveWallpapers(true);

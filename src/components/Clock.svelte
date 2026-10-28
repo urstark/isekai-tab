@@ -37,7 +37,6 @@
     <h2 class="date-text">{dateString}</h2>
   {/if}
 
-  <!-- Details text with fluid pixel-by-pixel collapse (hidden in incognito, loading, or user disabled) -->
   <div
     class="details-text"
     class:collapsed={store.incognito || store.isLoading || !store.settings.showWallpaperDetails}

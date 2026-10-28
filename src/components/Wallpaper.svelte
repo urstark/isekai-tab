@@ -16,7 +16,7 @@
 </script>
 
 <div class="wallpaper-view" class:incognito-active={store.incognito || !store.currentWallpaper.url}>
-  <!-- Incognito / Brand Canvas: Static Material Dark with centered Isekai Tab brand logo -->
+
   <div class="incognito-canvas" class:active={store.incognito || !store.currentWallpaper.url}>
     <div
       class="incognito-center-brand"
@@ -26,7 +26,6 @@
     </div>
   </div>
 
-  <!-- Wallpaper Image with Apple-style fluid crossfade & soft blur dissolve -->
   {#if store.currentWallpaper.url}
     <img
       src={store.currentWallpaper.url}
@@ -43,13 +42,10 @@
     />
   {/if}
 
-  <!-- Wallpaper Dim Overlay (normal mode) -->
   <div class="dim-overlay" class:hidden={store.incognito || !store.currentWallpaper.url}></div>
 
-  <!-- Ambient Breathing Aura -->
   <div class="ambient-aura-bg"></div>
 
-  <!-- Reroll Flash Burst -->
   {#if store.showRollOverlay && !store.incognito}
     <div class="flash-burst">
       <div class="flash-icon">

@@ -19,7 +19,7 @@
   interface PaletteCommand {
     id: string;
     title: string;
-    category: 'Actions' | 'Source' | 'Typography' | 'Filters' | 'Navigation';
+    category: 'Actions' | 'Source' | 'Typography' | 'Filters' | 'Navigation' | 'Preferences';
     shortcut?: string;
     action: () => void;
   }
@@ -29,7 +29,6 @@
   let inputElement = $state<HTMLInputElement | null>(null);
 
   let allCommands = $derived.by<PaletteCommand[]>(() => [
-    // Actions
     {
       id: 'reroll',
       title: 'Reroll Wallpaper',
@@ -59,7 +58,6 @@
       action: () => store.toggleIncognito(),
     },
 
-    // Feed Sources
     {
       id: 'src-all',
       title: `Toggle All Sources: ${store.settings.enabledSources.length === 4 ? 'All Active (✓)' : 'Enable All'}`,
@@ -115,7 +113,6 @@
       action: () => store.toggleSource('custom'),
     },
 
-    // Navigation & Hub
     {
       id: 'nav-custom',
       title: 'Open My Custom Wallpapers (Upload Files / Folders)',
@@ -153,7 +150,6 @@
       },
     },
 
-    // Interface & Preferences
     {
       id: 'pref-footer-version',
       title: `Toggle Footer "Created with ♥" & Version: ${store.settings.showVersionBadge ? 'Visible (✓)' : 'Hidden'}`,
@@ -170,7 +166,6 @@
       },
     },
 
-    // Sort Filters
     {
       id: 'sort-hot',
       title: 'Sort Wallpapers: Hot',
@@ -196,7 +191,6 @@
       action: () => store.setSort('relevance'),
     },
 
-    // Timeframe
     {
       id: 'time-day',
       title: 'Timeframe: Past 24 Hours',
@@ -222,7 +216,6 @@
       action: () => store.setTime('all'),
     },
 
-    // Typography
     ...PRESET_FONTS.map((font) => ({
       id: `font-${font.id}`,
       title: `Font Preset: ${font.name} (${font.category})`,
@@ -276,7 +269,7 @@
 </script>
 
 {#if store.isCommandPaletteOpen}
-  <!-- Backdrop -->
+
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
@@ -284,14 +277,13 @@
     onclick={() => store.closeCommandPalette()}
   ></div>
 
-  <!-- Palette Dialog -->
   <div
     class="palette-modal"
     role="dialog"
     aria-modal="true"
     aria-label="Rofi Command Palette"
   >
-    <!-- Prompt Bar -->
+
     <div class="palette-input-wrap">
       <div class="prompt-icon">
         <span class="prompt-symbol">&gt;_</span>
@@ -325,7 +317,6 @@
       </div>
     </div>
 
-    <!-- Commands List -->
     <div class="palette-results">
       {#if filteredCommands.length === 0}
         <div class="empty-results">
@@ -373,7 +364,6 @@
       {/if}
     </div>
 
-    <!-- Footer helper hint -->
     <div class="palette-footer">
       <span><kbd>↑</kbd> <kbd>↓</kbd> to navigate</span>
       <span><kbd>↵</kbd> to execute</span>

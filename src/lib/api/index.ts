@@ -25,14 +25,12 @@ function shuffle<T>(array: T[]): T[] {
 export async function fetchWallpapers(options: FetchOptions): Promise<WallpaperItem[]> {
   const { sort = 'hot', time = 'week', nsfw = false } = options;
 
-  // Resolve target sources list
   let targetSources: IndividualSource[] = [];
   if (options.sources && options.sources.length > 0) {
     targetSources = options.sources;
   } else if (options.source && options.source !== 'hybrid') {
     targetSources = [options.source as IndividualSource];
   } else {
-    // Hybrid / all sources enabled
     targetSources = ['wallhaven', 'konachan', 'cozypixels', 'custom'];
   }
 
@@ -76,7 +74,6 @@ export async function fetchWallpapers(options: FetchOptions): Promise<WallpaperI
     console.warn('Failed to aggregate wallpapers:', err);
   }
 
-  // Robust fallback: if all target sources returned 0 results (e.g. rate limit, offline, or 403),
   // fall back to Wallhaven then CozyPixels so the app never freezes with an empty wallpaper pool
   if (results.length === 0) {
     console.warn('All target sources returned 0 wallpapers; activating graceful fallback.');
@@ -84,7 +81,7 @@ export async function fetchWallpapers(options: FetchOptions): Promise<WallpaperI
       results = await fetchWallhavenWallpapers({ sort, time, nsfw });
     } catch {
       try {
-        results = await fetchCozyPixelsWallpapers();
+        results = await fetchGitHubWallpapers(['cozypixels']);
       } catch {
         results = [];
       }
