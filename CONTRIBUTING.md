@@ -56,10 +56,10 @@ We like to keep things simple, clean, and fast. Here are a few things to keep in
    New tabs should open instantly without lag or CPU spikes. Keep memory allocations minimal, avoid heavy polling loops, and optimize asset loading.
 
 2. **Clean & Self-Documenting Code**
-   Write code that explains itself through good naming and clean structure. Avoid cluttering files with obvious comments (e.g. `// increment counter`). Save comments only for tricky workarounds or API quirks.
+   Write code that explains itself through good naming and clean structure. Avoid cluttering files with obvious comments. Save comments only for tricky workarounds or API quirks.
 
 3. **Natural Human Commit Messages**
-   Write simple, direct commit messages like a normal developer (e.g. `Add Tokyo Night font preset` or `Improve drawer animation smoothness`). No rigid conventional prefixes required.
+   Write simple, direct commit messages (e.g. `Add Tokyo Night font preset` or `Improve drawer animation smoothness`).
 
 4. **Verify Before Submitting**
    Before pushing, always run:

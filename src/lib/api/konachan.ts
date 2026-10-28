@@ -1,4 +1,5 @@
 import type { WallpaperItem, SortFilter, TimeFilter } from '../types';
+import { fetchJsonSafe } from './fetch';
 
 interface MoebooruPost {
   id: number;
@@ -36,15 +37,7 @@ async function fetchFromMoebooru(
   isNsfw = false
 ): Promise<WallpaperItem[]> {
   try {
-    const res = await fetch(endpointUrl, {
-      signal: AbortSignal.timeout(8000),
-    });
-    if (!res.ok) {
-      console.warn(`${siteName} API returned ${res.status}`);
-      return [];
-    }
-
-    const posts: MoebooruPost[] = await res.json();
+    const posts = await fetchJsonSafe<MoebooruPost[]>(endpointUrl, 9000);
     if (!Array.isArray(posts)) return [];
 
     return posts
@@ -101,18 +94,18 @@ export async function fetchKonachanWallpapers(options: {
   const items: WallpaperItem[] = [];
 
   if (nsfw) {
-    const yandeUrl = `https://yande.re/post.json?limit=50&page=${page}&tags=rating:questionable+width:>=1920+${orderTag}`;
+    const yandeUrl = `https://yande.re/post.json?limit=50&page=${page}&tags=rating:questionable+width:1920..+${orderTag}`;
     const nsfwItems = await fetchFromMoebooru(yandeUrl, 'Yande.re', true);
     items.push(...nsfwItems);
   } else {
     const [kcItems, ydItems] = await Promise.all([
       fetchFromMoebooru(
-        `https://konachan.net/post.json?limit=40&page=${page}&tags=rating:safe+width:>=1920+${orderTag}`,
+        `https://konachan.net/post.json?limit=40&page=${page}&tags=rating:safe+width:1920..+${orderTag}`,
         'Konachan',
         false
       ),
       fetchFromMoebooru(
-        `https://yande.re/post.json?limit=30&page=${page}&tags=rating:safe+width:>=1920+${orderTag}`,
+        `https://yande.re/post.json?limit=30&page=${page}&tags=rating:safe+width:1920..+${orderTag}`,
         'Yande.re',
         false
       ),

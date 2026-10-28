@@ -1,4 +1,5 @@
 import type { WallpaperItem, GitHubRepoId } from '../types';
+import { fetchJsonSafe } from './fetch';
 import cozyPathsFallback from './cozypixels-paths.json';
 import laustoicPathsFallback from './laustoic-paths.json';
 
@@ -88,14 +89,13 @@ async function getRepoImagePaths(
   }
 
   try {
-    const res = await fetch(`https://api.github.com/repos/${repoFullName}/git/trees/${branch}?recursive=1`, {
-      signal: AbortSignal.timeout(6000),
-    });
-    if (res.ok) {
-      const json = await res.json();
-      if (Array.isArray(json.tree)) {
-        const discovered = json.tree
-          .filter(
+    const json = await fetchJsonSafe<{ tree?: Array<{ type: string; path: string }> }>(
+      `https://api.github.com/repos/${repoFullName}/git/trees/${branch}?recursive=1`,
+      6000
+    );
+    if (json && Array.isArray(json.tree)) {
+      const discovered = json.tree
+        .filter(
             (t: any) =>
               t.type === 'blob' &&
               /\.(jpe?g|png|webp)$/i.test(t.path) &&
@@ -110,7 +110,6 @@ async function getRepoImagePaths(
           return discovered;
         }
       }
-    }
   } catch (err) {
     console.warn(`GitHub API tree fetch failed for ${repoFullName}, using fallback:`, err);
   }

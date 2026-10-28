@@ -1,4 +1,5 @@
 import type { WallpaperItem, SortFilter, TimeFilter } from '../types';
+import { fetchJsonSafe } from './fetch';
 
 export async function fetchWallhavenWallpapers(options: {
   sort?: SortFilter;
@@ -48,14 +49,15 @@ export async function fetchWallhavenWallpapers(options: {
   if (q) params.set('q', q);
   if (sorting === 'toplist') params.set('topRange', topRange);
 
-  const res = await fetch(`https://wallhaven.cc/api/v1/search?${params}`, {
-    signal: AbortSignal.timeout(8000),
-  });
-  if (!res.ok) {
-    throw new Error(`Wallhaven API returned ${res.status}`);
-  }
-
-  const json = await res.json();
+  const json = await fetchJsonSafe<{ data?: Array<{
+    id: string;
+    path: string;
+    resolution?: string;
+    thumbs?: { large?: string; original?: string };
+    source?: string;
+    url?: string;
+    purity?: string;
+  }> }>(`https://wallhaven.cc/api/v1/search?${params}`, 8000);
   if (!json.data || !Array.isArray(json.data)) {
     return [];
   }
