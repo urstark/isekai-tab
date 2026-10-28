@@ -6,7 +6,7 @@ Isekai Tab is an open source passion project licensed under GPL-3.0. Whether you
 
 ---
 
-## 🍵 Ways to Contribute
+## Ways to Contribute
 
 * **Report bugs**: If something is broken, laggy, or looks weird on your screen, [open an issue](https://github.com/urstark/isekai-tab/issues) with details about your browser, OS, and what happened.
 * **Suggest ideas**: Want a new wallpaper feed (e.g. Catppuccin, Tokyo Night), a new command palette action, or a customization option? Open an issue or discussion!
@@ -14,7 +14,7 @@ Isekai Tab is an open source passion project licensed under GPL-3.0. Whether you
 
 ---
 
-## 🚀 Getting Started Locally
+## Getting Started Locally
 
 ### Prerequisites
 
@@ -48,7 +48,7 @@ Changes to Svelte files and styles will hot-reload automatically.
 
 ---
 
-## 🎐 Guidelines & Philosophy
+## Guidelines & Philosophy
 
 We like to keep things simple, clean, and fast. Here are a few things to keep in mind when writing code:
 
@@ -74,7 +74,7 @@ We like to keep things simple, clean, and fast. Here are a few things to keep in
 
 ---
 
-## 🎋 Pull Request Workflow
+## Pull Request Workflow
 
 1. Create a feature branch from `main`:
    ```bash
@@ -93,4 +93,4 @@ We like to keep things simple, clean, and fast. Here are a few things to keep in
 
 Please review our [Code of Conduct](CODE_OF_CONDUCT.md). Be respectful, helpful, and kind to everyone in issues and PR discussions.
 
-Thank you for helping make Isekai Tab awesome! 💫🍡
+Thank you for helping make Isekai Tab awesome!
