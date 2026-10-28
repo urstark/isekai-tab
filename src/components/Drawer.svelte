@@ -245,6 +245,7 @@
                         alt={item.title}
                         class="card-img"
                         loading="lazy"
+                        decoding="async"
                       />
                       <div class="card-overlay">
                         <span class="card-num">#{index + 1}</span>
@@ -961,7 +962,7 @@
                       title="Set as active wallpaper"
                       onclick={() => store.selectFromHistory(item.id)}
                     >
-                      <img src={item.thumbnailUrl || item.url} alt={item.title} loading="lazy" />
+                      <img src={item.thumbnailUrl || item.url} alt={item.title} loading="lazy" decoding="async" />
                       <div class="card-overlay">
                         <span class="card-title">{item.title}</span>
                         <span class="card-sub">{item.author}</span>

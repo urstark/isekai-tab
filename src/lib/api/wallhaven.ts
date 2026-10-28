@@ -48,7 +48,9 @@ export async function fetchWallhavenWallpapers(options: {
   if (q) params.set('q', q);
   if (sorting === 'toplist') params.set('topRange', topRange);
 
-  const res = await fetch(`https://wallhaven.cc/api/v1/search?${params}`);
+  const res = await fetch(`https://wallhaven.cc/api/v1/search?${params}`, {
+    signal: AbortSignal.timeout(8000),
+  });
   if (!res.ok) {
     throw new Error(`Wallhaven API returned ${res.status}`);
   }
@@ -81,7 +83,7 @@ export async function fetchWallhavenWallpapers(options: {
       url: item.path,
       thumbnailUrl: item.thumbs?.large || item.thumbs?.original || item.path,
       sourceUrl: item.source || item.url,
-      subreddit: sourceLabel,
+      sourceName: sourceLabel,
       favorite: false,
       isNsfw: item.purity === 'nsfw',
     };

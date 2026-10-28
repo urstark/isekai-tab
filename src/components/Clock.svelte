@@ -4,9 +4,10 @@
   let now = $state(new Date());
 
   $effect(() => {
+    const intervalMs = store.settings.showSeconds ? 1000 : 10000;
     const timer = setInterval(() => {
       now = new Date();
-    }, 1000);
+    }, intervalMs);
     return () => clearInterval(timer);
   });
 

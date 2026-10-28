@@ -140,7 +140,7 @@ export function convertStoredToWallpaperItem(stored: StoredCustomWallpaper): Wal
     url: displayUrl,
     thumbnailUrl: stored.thumbnailDataUrl || displayUrl,
     sourceUrl: stored.directUrl || '#',
-    subreddit: 'Custom Wallpaper',
+    sourceName: 'Custom Wallpaper',
     favorite: false,
   };
 }

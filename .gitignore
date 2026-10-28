@@ -5,9 +5,6 @@
 # Dependencies
 node_modules
 
-# Reference projects
-atarashii-tab/
-
 # Logs
 *.log
 npm-debug.log*

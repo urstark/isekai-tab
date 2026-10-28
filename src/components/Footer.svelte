@@ -32,7 +32,7 @@
             target="_blank"
             rel="noopener noreferrer"
           >
-            {store.currentWallpaper.subreddit || 'Wallhaven'}
+            {store.currentWallpaper.sourceName || 'Wallhaven'}
           </a>
         </p>
       </div>

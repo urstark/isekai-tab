@@ -6,7 +6,7 @@ export interface WallpaperItem {
   url: string;
   thumbnailUrl: string;
   sourceUrl: string;
-  subreddit?: string;
+  sourceName?: string;
   favorite: boolean;
   isNsfw?: boolean;
 }

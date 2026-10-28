@@ -1,10 +1,20 @@
+let sharedAudioCtx: AudioContext | null = null;
+
 export function playRollSound() {
   try {
     const AudioContextClass =
       window.AudioContext ||
       (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     if (!AudioContextClass) return;
-    const audio = new AudioContextClass();
+
+    if (!sharedAudioCtx || sharedAudioCtx.state === 'closed') {
+      sharedAudioCtx = new AudioContextClass();
+    }
+    if (sharedAudioCtx.state === 'suspended') {
+      sharedAudioCtx.resume();
+    }
+
+    const audio = sharedAudioCtx;
     const notes = [880, 1174.66, 1567.98];
 
     notes.forEach((frequency, index) => {
@@ -24,7 +34,7 @@ export function playRollSound() {
       oscillator.stop(start + 0.1);
     });
   } catch (err) {
-    console.warn('Audio playback not supported:', err);
+    console.warn('Audio playback error:', err);
   }
 }
 

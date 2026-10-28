@@ -88,7 +88,9 @@ async function getRepoImagePaths(
   }
 
   try {
-    const res = await fetch(`https://api.github.com/repos/${repoFullName}/git/trees/${branch}?recursive=1`);
+    const res = await fetch(`https://api.github.com/repos/${repoFullName}/git/trees/${branch}?recursive=1`, {
+      signal: AbortSignal.timeout(6000),
+    });
     if (res.ok) {
       const json = await res.json();
       if (Array.isArray(json.tree)) {
@@ -143,7 +145,7 @@ export async function fetchGitHubWallpapers(enabledRepos?: GitHubRepoId[]): Prom
               url: rawUrl,
               thumbnailUrl: rawUrl,
               sourceUrl: `https://github.com/linuxdotexe/nordic-wallpapers/blob/master/${encoded}`,
-              subreddit: 'GitHub (Nordic Linux)',
+              sourceName: 'GitHub (Nordic Linux)',
               favorite: false,
             });
           }
@@ -168,7 +170,7 @@ export async function fetchGitHubWallpapers(enabledRepos?: GitHubRepoId[]): Prom
               url: rawUrl,
               thumbnailUrl: rawUrl,
               sourceUrl: `https://github.com/AngelJumbo/gruvbox-wallpapers/blob/main/${encoded}`,
-              subreddit: 'GitHub (Gruvbox Ricing)',
+              sourceName: 'GitHub (Gruvbox Ricing)',
               favorite: false,
             });
           }
@@ -193,7 +195,7 @@ export async function fetchGitHubWallpapers(enabledRepos?: GitHubRepoId[]): Prom
               url: rawUrl,
               thumbnailUrl: rawUrl,
               sourceUrl: `https://github.com/D3Ext/aesthetic-wallpapers/blob/main/${encoded}`,
-              subreddit: 'GitHub (Aesthetic Anime)',
+              sourceName: 'GitHub (Aesthetic Anime)',
               favorite: false,
             });
           }
@@ -218,7 +220,7 @@ export async function fetchGitHubWallpapers(enabledRepos?: GitHubRepoId[]): Prom
               url: rawUrl,
               thumbnailUrl: rawUrl,
               sourceUrl: `https://github.com/SleepyCatHey/CozyPixels/blob/main/${encoded}`,
-              subreddit: 'GitHub (CozyPixels)',
+              sourceName: 'GitHub (CozyPixels)',
               favorite: false,
             });
           }
@@ -259,7 +261,7 @@ export async function fetchLaustoicWallpapers(): Promise<WallpaperItem[]> {
       url: rawUrl,
       thumbnailUrl: rawUrl,
       sourceUrl: `https://github.com/laustoic/laustoic-wallpaper-repo/blob/main/${encoded}`,
-      subreddit: category !== 'Wallpapers' ? `Linux Hub (${category})` : 'Linux Wallpaper Hub',
+      sourceName: category !== 'Wallpapers' ? `Linux Hub (${category})` : 'Linux Wallpaper Hub',
       favorite: false,
     };
   });

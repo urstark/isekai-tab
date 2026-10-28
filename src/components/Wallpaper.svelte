@@ -31,6 +31,8 @@
       src={store.currentWallpaper.url}
       alt={store.currentWallpaper.title}
       class="wallpaper-media"
+      decoding="async"
+      fetchpriority="high"
       class:visible={imgLoaded && !store.incognito}
       onload={() => {
         imgLoaded = true;

@@ -32,16 +32,17 @@ export const BRAND_FALLBACK_WALLPAPER: WallpaperItem = {
   url: '',
   thumbnailUrl: '',
   sourceUrl: '',
-  subreddit: 'Isekai Tab',
+  sourceName: 'Isekai Tab',
   favorite: false,
 };
 
 export function getWallpaperSource(item: WallpaperItem): IndividualSource {
   if (item.id.startsWith('custom-')) return 'custom';
+  const name = item.sourceName || '';
   if (
     item.id.startsWith('kc-') ||
     item.id.startsWith('ya-') ||
-    (item.subreddit && (item.subreddit.includes('Konachan') || item.subreddit.includes('Yande.re')))
+    (name.includes('Konachan') || name.includes('Yande.re'))
   ) {
     return 'konachan';
   }
@@ -51,9 +52,9 @@ export function getWallpaperSource(item: WallpaperItem): IndividualSource {
     item.id.startsWith('cozy-') ||
     item.id.startsWith('laustoic-') ||
     item.author?.includes('CozyPixels') ||
-    item.subreddit?.includes('GitHub') ||
-    item.subreddit?.includes('CozyPixels') ||
-    item.subreddit?.includes('Linux')
+    name.includes('GitHub') ||
+    name.includes('CozyPixels') ||
+    name.includes('Linux')
   ) {
     return 'cozypixels';
   }
@@ -128,6 +129,7 @@ class Store {
 
   activeTab = $state<MenuTab>('history');
   showFavoritesOnly = $state<boolean>(false);
+  private saveTimeout: ReturnType<typeof setTimeout> | null = null;
 
   theme = $state<AppTheme>({
     primary: '#ffffff',
@@ -217,11 +219,21 @@ class Store {
           this.showFavoritesOnly,
           this.historyIndex,
           this.wallpaperQueue.length,
-          $state.snapshot(this.theme),
-          $state.snapshot(this.settings),
-          $state.snapshot(this.currentWallpaper),
-          $state.snapshot(this.history),
-          $state.snapshot(this.wallpaperQueue),
+          this.theme.primary,
+          this.theme.backgroundDim,
+          this.settings.showAttribution,
+          this.settings.showVersionBadge,
+          this.settings.showBottomMenuBtn,
+          this.settings.clockPosition,
+          this.settings.clock24h,
+          this.settings.showSeconds,
+          this.settings.showTime,
+          this.settings.showDate,
+          this.settings.fontHeading,
+          this.settings.fontBody,
+          this.settings.quickHudPosition,
+          this.currentWallpaper.id,
+          this.history.length,
         ];
         this.saveState();
       });
@@ -243,7 +255,7 @@ class Store {
           ...this.settings,
           ...data.settings,
           enabledSources: Array.isArray(data.settings.enabledSources) && data.settings.enabledSources.length > 0
-            ? (data.settings.enabledSources.filter((s: string) => s !== 'reddit') as IndividualSource[])
+            ? (data.settings.enabledSources as IndividualSource[])
             : ['wallhaven', 'konachan', 'cozypixels', 'custom'],
           enabledGitHubRepos: Array.isArray(data.settings.enabledGitHubRepos) && data.settings.enabledGitHubRepos.length > 0
             ? data.settings.enabledGitHubRepos
@@ -293,12 +305,22 @@ class Store {
 
   saveState() {
     if (!this.isHydrated || typeof localStorage === 'undefined') return;
+    if (this.saveTimeout) {
+      clearTimeout(this.saveTimeout);
+    }
+    this.saveTimeout = setTimeout(() => {
+      this.persistNow();
+    }, 150);
+  }
+
+  persistNow() {
+    if (!this.isHydrated || typeof localStorage === 'undefined') return;
     try {
       const data: PersistentState = {
         currentWallpaper: $state.snapshot(this.currentWallpaper),
-        history: $state.snapshot(this.history),
+        history: $state.snapshot(this.history).slice(0, 30),
         historyIndex: this.historyIndex,
-        wallpaperQueue: $state.snapshot(this.wallpaperQueue),
+        wallpaperQueue: $state.snapshot(this.wallpaperQueue).slice(0, 20),
         sort: this.sort,
         time: this.time,
         nsfw: this.nsfw,
@@ -497,10 +519,10 @@ class Store {
           const fresh = candidates[Math.floor(Math.random() * candidates.length)] || validItems[0]!;
           if (fresh) {
             this.currentWallpaper = fresh;
-            this.wallpaperQueue = validItems.filter((x) => x.id !== fresh.id && !!x.url);
+            this.wallpaperQueue = validItems.filter((x) => x.id !== fresh.id && !!x.url).slice(0, 20);
             const cleanHistory = this.history.filter((x) => !!x.url && x.id !== BRAND_FALLBACK_WALLPAPER.id);
             if (!cleanHistory.some((x) => x.id === fresh.id)) {
-              this.history = [fresh, ...cleanHistory].slice(0, 50);
+              this.history = [fresh, ...cleanHistory].slice(0, 30);
               this.historyIndex = 0;
             } else {
               this.history = cleanHistory;
@@ -516,10 +538,10 @@ class Store {
           const freshQueueItems = validItems.filter((x) => !existingIds.has(x.id));
 
           if (freshQueueItems.length > 0) {
-            this.wallpaperQueue = [...this.wallpaperQueue, ...freshQueueItems].slice(0, 80);
-          } else if (this.wallpaperQueue.length < 5) {
+            this.wallpaperQueue = [...this.wallpaperQueue, ...freshQueueItems].slice(0, 20);
+          } else if (this.wallpaperQueue.length < 4) {
             const recycled = validItems.filter((x) => x.id !== this.currentWallpaper.id);
-            this.wallpaperQueue = [...this.wallpaperQueue, ...recycled].slice(0, 50);
+            this.wallpaperQueue = [...this.wallpaperQueue, ...recycled].slice(0, 20);
           }
         }
         this.saveState();
@@ -666,14 +688,14 @@ class Store {
     if (this.wallpaperQueue.length === 0) {
       await this.loadLiveWallpapers(true);
     } else {
-      if (this.wallpaperQueue.length <= 4 && !this.isFetching) {
+      if (this.wallpaperQueue.length <= 3 && !this.isFetching) {
         this.loadLiveWallpapers(false);
       }
 
       const nextItem = this.wallpaperQueue.shift()!;
       this.currentWallpaper = nextItem;
       if (!this.history.some((x) => x.id === nextItem.id)) {
-        this.history = [nextItem, ...this.history].slice(0, 50);
+        this.history = [nextItem, ...this.history].slice(0, 30);
         this.historyIndex = 0;
       } else {
         this.historyIndex = this.history.findIndex((x) => x.id === nextItem.id);

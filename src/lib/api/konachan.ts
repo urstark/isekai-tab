@@ -36,7 +36,9 @@ async function fetchFromMoebooru(
   isNsfw = false
 ): Promise<WallpaperItem[]> {
   try {
-    const res = await fetch(endpointUrl);
+    const res = await fetch(endpointUrl, {
+      signal: AbortSignal.timeout(8000),
+    });
     if (!res.ok) {
       console.warn(`${siteName} API returned ${res.status}`);
       return [];
@@ -73,7 +75,7 @@ async function fetchFromMoebooru(
           url: imageUrl,
           thumbnailUrl: thumb,
           sourceUrl: sourceLink,
-          subreddit: `${siteName} ${isPostNsfw ? 'Waifu' : 'Anime'}`,
+          sourceName: `${siteName} ${isPostNsfw ? 'Waifu' : 'Anime'}`,
           favorite: false,
           isNsfw: isPostNsfw,
         };
