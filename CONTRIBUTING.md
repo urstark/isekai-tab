@@ -74,18 +74,26 @@ We like to keep things simple, clean, and fast. Here are a few things to keep in
 
 ---
 
-## Pull Request Workflow
+## Branching & Pull Request Workflow
 
-1. Create a feature branch from `main`:
+We maintain two primary branches:
+* **`main`**: Stable, production-ready releases.
+* **`dev`**: Active development. All new work lands here first before being merged into `main`.
+
+### Steps to contribute:
+
+1. Always branch off the **`dev`** branch into your own feature or bugfix branch:
    ```bash
-   git checkout -b my-new-feature
+   git checkout dev
+   git pull origin dev
+   git checkout -b my-feature-name
    ```
-2. Make your changes and commit them cleanly.
-3. Push to your fork:
+2. Make your changes and verify with `pnpm check` and `pnpm build`.
+3. Commit cleanly and push to your fork:
    ```bash
-   git push origin my-new-feature
+   git push origin my-feature-name
    ```
-4. Open a Pull Request against `main`. If you changed something visual, attaching a quick screenshot or GIF helps a lot!
+4. Open a Pull Request targeting the **`dev`** branch (not `main`). If you changed something visual, attaching a quick screenshot or GIF helps a lot!
 
 ---
 
