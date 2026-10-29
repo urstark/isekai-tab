@@ -4,10 +4,19 @@
   import DefaultCanvas from './DefaultCanvas.svelte';
 
   let imgLoaded = $state(false);
+  let thumbLoaded = $state(false);
+
+  const hasThumbnail = $derived(
+    Boolean(
+      store.currentWallpaper.thumbnailUrl &&
+      store.currentWallpaper.thumbnailUrl !== store.currentWallpaper.url
+    )
+  );
 
   $effect(() => {
     const _url = store.currentWallpaper.url;
     imgLoaded = false;
+    thumbLoaded = false;
     if (_url) {
       store.setLoading(true);
     } else {
@@ -18,8 +27,24 @@
 
 <div class="wallpaper-view" class:incognito-active={store.incognito || !store.currentWallpaper.url}>
 
-  <DefaultCanvas active={store.isDefaultScreen || !imgLoaded} />
+  <!-- 1. Base Default Canvas (active during initial load, incognito, or empty state) -->
+  <DefaultCanvas active={store.incognito || !store.currentWallpaper.url || (!imgLoaded && !thumbLoaded)} />
 
+  <!-- 2. Progressive Fast Blur-Up Thumbnail -->
+  {#if hasThumbnail}
+    <img
+      src={store.currentWallpaper.thumbnailUrl}
+      alt=""
+      aria-hidden="true"
+      class="wallpaper-media wallpaper-thumb"
+      class:visible={thumbLoaded && !imgLoaded && !store.incognito}
+      onload={() => {
+        thumbLoaded = true;
+      }}
+    />
+  {/if}
+
+  <!-- 3. Full-Resolution Master Wallpaper Image -->
   {#if store.currentWallpaper.url}
     <img
       src={store.currentWallpaper.url}
@@ -39,7 +64,7 @@
     />
   {/if}
 
-  <div class="dim-overlay" class:hidden={store.isDefaultScreen || !imgLoaded}></div>
+  <div class="dim-overlay" class:hidden={store.incognito || !store.currentWallpaper.url || (!imgLoaded && !thumbLoaded)}></div>
 
   {#if store.showRollOverlay && !store.incognito}
     <div class="flash-burst">
@@ -74,6 +99,14 @@
                 transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
                 filter 0.65s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: opacity, transform, filter;
+  }
+
+  .wallpaper-thumb {
+    filter: blur(16px) !important;
+    transform: scale(1.05) !important;
+    z-index: 1;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
   }
 
   .wallpaper-media.visible {

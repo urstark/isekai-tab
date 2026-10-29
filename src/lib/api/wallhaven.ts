@@ -1,4 +1,4 @@
-import type { WallpaperItem, SortFilter, TimeFilter } from '../types';
+import type { WallpaperItem, SortFilter, TimeFilter, ImageQuality } from '../types';
 import { fetchJsonSafe } from './fetch';
 
 export async function fetchWallhavenWallpapers(options: {
@@ -6,8 +6,9 @@ export async function fetchWallhavenWallpapers(options: {
   time?: TimeFilter;
   nsfw?: boolean;
   page?: number;
+  quality?: ImageQuality;
 }): Promise<WallpaperItem[]> {
-  const { sort = 'hot', time = 'week', nsfw = false } = options;
+  const { sort = 'hot', time = 'week', nsfw = false, quality = 'balanced' } = options;
   const page = options.page ?? (sort === 'new' ? 1 : Math.floor(Math.random() * 3) + 1);
 
   let sorting = 'toplist';
@@ -53,7 +54,7 @@ export async function fetchWallhavenWallpapers(options: {
     id: string;
     path: string;
     resolution?: string;
-    thumbs?: { large?: string; original?: string };
+    thumbs?: { large?: string; original?: string; small?: string };
     source?: string;
     url?: string;
     purity?: string;
@@ -61,6 +62,8 @@ export async function fetchWallhavenWallpapers(options: {
   if (!json.data || !Array.isArray(json.data)) {
     return [];
   }
+
+  const isBalanced = quality === 'balanced';
 
   const items: WallpaperItem[] = json.data.map((item: any) => {
     const is4K = item.dimension_x >= 3840;
@@ -77,13 +80,21 @@ export async function fetchWallhavenWallpapers(options: {
 
     const sourceLabel = platform !== 'Wallhaven' ? `${platform} (via Wallhaven)` : 'Wallhaven';
 
+    const mainUrl = isBalanced
+      ? item.thumbs?.large || item.path
+      : item.path;
+
+    const thumbUrl = isBalanced
+      ? item.thumbs?.small || item.thumbs?.large || item.path
+      : item.thumbs?.large || item.thumbs?.original || item.path;
+
     return {
       id: `wh-${item.id}`,
       title: `Anime Artwork • ${item.id}`,
       author: sourceLabel,
       res: cleanRes,
-      url: item.path,
-      thumbnailUrl: item.thumbs?.large || item.thumbs?.original || item.path,
+      url: mainUrl,
+      thumbnailUrl: thumbUrl,
       sourceUrl: item.source || item.url,
       sourceName: sourceLabel,
       favorite: false,

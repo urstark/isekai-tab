@@ -16,6 +16,7 @@ export type TimeFilter = 'hour' | 'day' | 'week' | 'month' | 'year' | 'all';
 export type MenuTab = 'history' | 'settings' | 'shortcuts' | 'custom';
 export type ClockPosition = 'left' | 'center';
 export type MenuDockVisibility = 'hover' | 'always';
+export type ImageQuality = 'balanced' | 'original';
 export type IndividualSource = 'wallhaven' | 'konachan' | 'github' | 'cozypixels' | 'custom';
 export type WallpaperSource = 'wallhaven' | 'konachan' | 'github' | 'cozypixels' | 'hybrid' | 'custom';
 
@@ -66,6 +67,7 @@ export interface AppSettings {
   fontBody: string;
   customFontHeadingName?: string;
   quickHudPosition?: QuickHudPosition;
+  imageQuality: ImageQuality;
 }
 
 export interface AppTheme {

@@ -1,4 +1,4 @@
-import type { WallpaperItem, SortFilter, TimeFilter, MenuTab, AppSettings, AppTheme, WallpaperSource, IndividualSource, GitHubRepoId } from './types';
+import type { WallpaperItem, SortFilter, TimeFilter, MenuTab, AppSettings, AppTheme, WallpaperSource, IndividualSource, GitHubRepoId, ImageQuality } from './types';
 import { playRollSound, hexToRgb } from './sound';
 import { fetchWallpapers } from './api';
 import {
@@ -156,6 +156,7 @@ class Store {
     fontBody: 'plus-jakarta',
     customFontHeadingName: undefined,
     quickHudPosition: 'right',
+    imageQuality: 'balanced',
   });
 
   constructor() {
@@ -232,6 +233,7 @@ class Store {
           this.settings.fontHeading,
           this.settings.fontBody,
           this.settings.quickHudPosition,
+          this.settings.imageQuality,
           this.currentWallpaper.id,
           this.history.length,
         ];
@@ -266,6 +268,7 @@ class Store {
           showVersionBadge: typeof data.settings.showVersionBadge === 'boolean'
             ? data.settings.showVersionBadge
             : true,
+          imageQuality: data.settings.imageQuality === 'original' ? 'original' : 'balanced',
         };
       }
       if (data.sort) this.sort = data.sort;
@@ -509,6 +512,7 @@ class Store {
         sort: this.sort,
         time: this.time,
         nsfw: this.nsfw,
+        quality: this.settings.imageQuality,
       });
 
       let validItems = items.filter((x) => this.isItemSourceEnabled(x) && !!x.url);
@@ -671,6 +675,14 @@ class Store {
   toggleVersionBadge() {
     this.settings.showVersionBadge = !this.settings.showVersionBadge;
     this.saveState();
+  }
+
+  setImageQuality(quality: ImageQuality) {
+    if (this.settings.imageQuality === quality) return;
+    this.settings.imageQuality = quality;
+    this.wallpaperQueue = [];
+    this.saveState();
+    this.loadLiveWallpapers(true);
   }
 
   async reroll() {

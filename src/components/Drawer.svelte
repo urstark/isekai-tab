@@ -23,6 +23,7 @@
   import LinkLinear from '@solar-icons/svelte/linear/link';
   import TextFormatLinear from '@solar-icons/svelte/linear/text-format';
   import MagnifierLinear from '@solar-icons/svelte/linear/magnifier';
+  import BoltLinear from '@solar-icons/svelte/linear/bolt';
   import { PRESET_FONTS } from '../lib/fonts';
   import { GITHUB_REPOS } from '../lib/types';
 
@@ -446,6 +447,39 @@
                   </div>
                 </div>
               {/if}
+            </section>
+
+            <section class="settings-group">
+              <div class="group-header">
+                <div class="header-left-wrap">
+                  <div class="group-icon">
+                    <BoltLinear size={18} />
+                  </div>
+                  <div class="group-titles">
+                    <h4>Image Quality & Speed</h4>
+                    <p>Select streaming resolution. Balanced loads up to 10× faster and uses ~95% less data.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="source-pills-row">
+                <button
+                  type="button"
+                  class="source-pill btn-spring"
+                  class:active={store.settings.imageQuality === 'balanced'}
+                  onclick={() => store.setImageQuality('balanced')}
+                >
+                  {#if store.settings.imageQuality === 'balanced'}✓ {/if}Balanced (1080p HD)
+                </button>
+                <button
+                  type="button"
+                  class="source-pill btn-spring"
+                  class:active={store.settings.imageQuality === 'original'}
+                  onclick={() => store.setImageQuality('original')}
+                >
+                  {#if store.settings.imageQuality === 'original'}✓ {/if}Original (4K Ultra)
+                </button>
+              </div>
             </section>
 
             <section class="settings-group">

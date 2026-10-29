@@ -1,4 +1,4 @@
-import type { WallpaperItem, SortFilter, TimeFilter } from '../types';
+import type { WallpaperItem, SortFilter, TimeFilter, ImageQuality } from '../types';
 import { fetchJsonSafe } from './fetch';
 
 interface MoebooruPost {
@@ -34,14 +34,17 @@ function cleanBooruTags(rawTags: string): string {
 async function fetchFromMoebooru(
   endpointUrl: string,
   siteName: string,
-  isNsfw = false
+  isNsfw = false,
+  quality: ImageQuality = 'balanced'
 ): Promise<WallpaperItem[]> {
   try {
     const posts = await fetchJsonSafe<MoebooruPost[]>(endpointUrl, 9000);
     if (!Array.isArray(posts)) return [];
 
+    const isBalanced = quality === 'balanced';
+
     return posts
-      .filter((p) => p.width && p.height && (p.jpeg_url || p.file_url))
+      .filter((p) => p.width && p.height && (p.sample_url || p.jpeg_url || p.file_url))
       .map((p) => {
         const is4K = p.width >= 3840;
         const is2K = p.width >= 2560 && !is4K;
@@ -49,8 +52,13 @@ async function fetchFromMoebooru(
         const cleanRes = `${p.width} × ${p.height} • ${qualityTag}`;
 
         const title = cleanBooruTags(p.tags);
-        const imageUrl = p.jpeg_url || p.file_url;
-        const thumb = p.sample_url || p.preview_url || imageUrl;
+        const fallbackUrl = p.file_url || p.sample_url || p.jpeg_url || '';
+        const imageUrl = (isBalanced
+          ? p.sample_url || p.jpeg_url || fallbackUrl
+          : p.file_url || p.jpeg_url || fallbackUrl) || fallbackUrl;
+        const thumb = (isBalanced
+          ? p.preview_url || p.sample_url || imageUrl
+          : p.sample_url || p.preview_url || imageUrl) || imageUrl;
         const isPostNsfw = p.rating !== 's' || isNsfw;
 
         let sourceLink = p.source;
@@ -83,8 +91,9 @@ export async function fetchKonachanWallpapers(options: {
   sort?: SortFilter;
   time?: TimeFilter;
   nsfw?: boolean;
+  quality?: ImageQuality;
 }): Promise<WallpaperItem[]> {
-  const { sort = 'hot', nsfw = false } = options;
+  const { sort = 'hot', nsfw = false, quality = 'balanced' } = options;
   const page = sort === 'new' ? 1 : Math.floor(Math.random() * 4) + 1;
 
   let orderTag = 'order:score';
@@ -95,19 +104,21 @@ export async function fetchKonachanWallpapers(options: {
 
   if (nsfw) {
     const yandeUrl = `https://yande.re/post.json?limit=50&page=${page}&tags=rating:questionable+width:1920..+${orderTag}`;
-    const nsfwItems = await fetchFromMoebooru(yandeUrl, 'Yande.re', true);
+    const nsfwItems = await fetchFromMoebooru(yandeUrl, 'Yande.re', true, quality);
     items.push(...nsfwItems);
   } else {
     const [kcItems, ydItems] = await Promise.all([
       fetchFromMoebooru(
         `https://konachan.net/post.json?limit=40&page=${page}&tags=rating:safe+width:1920..+${orderTag}`,
         'Konachan',
-        false
+        false,
+        quality
       ),
       fetchFromMoebooru(
         `https://yande.re/post.json?limit=30&page=${page}&tags=rating:safe+width:1920..+${orderTag}`,
         'Yande.re',
-        false
+        false,
+        quality
       ),
     ]);
 

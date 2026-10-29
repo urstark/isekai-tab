@@ -1,8 +1,29 @@
-# ⛩️ Isekai Tab
+<p align="center">
+  <img src=".github/assets/home.png" alt="Isekai Tab Overview" width="85%">
+</p>
 
-> A sleek, keyboard-first anime & Linux ricing new tab extension for modern browsers.
+<h1 align="center">⛩️ Isekai Tab</h1>
 
-Every new tab transports you into an anime world. Clean dark interface with glassmorphic effect inspired by Waybar, Hyprland, and Rofi.
+<p align="center">
+  <strong>A sleek, keyboard-first anime & Linux ricing new tab extension for modern browsers.</strong>
+</p>
+
+<p align="center">
+  Every new tab transports you into an anime world. Clean dark interface with glassmorphic effect inspired by Waybar, Hyprland, and Rofi.
+</p>
+
+---
+
+## 👀 Demo 
+
+| Command Palette (`Ctrl+K` / `Space`) | Settings Drawer & Feed Controls |
+| :---: | :---: |
+| <img src=".github/assets/search.png" alt="Command Palette" width="100%"> | <img src=".github/assets/menu.png" alt="Settings Drawer" width="100%"> |
+
+<p align="center">
+  <strong>Minimalist Incognito Mode (<kbd>I</kbd>)</strong><br>
+  <img src=".github/assets/incognito.png" alt="Minimalist Incognito Mode" width="85%">
+</p>
 
 ---
 
@@ -13,6 +34,7 @@ Every new tab transports you into an anime world. Clean dark interface with glas
   * **Konachan & Yande.re**: High-resolution Moebooru waifu & anime artwork with optional NSFW controls.
   * **GitHub Ricing Repositories**: Sub-selectable ricing collections including **Nordic Linux** (`linuxdotexe/nordic-wallpapers`), **Gruvbox Ricing** (`AngelJumbo/gruvbox-wallpapers`), **Aesthetic Anime** (`D3Ext/aesthetic-wallpapers`), and **CozyPixels** (`SleepyCatHey/CozyPixels`).
   * **Hybrid Mode**: Seamlessly shuffle across all feeds together with background replenishment.
+  * **Stream Resolution Control**: Choose between **Balanced (1080p HD)** for instant ~100ms loading and ~95% bandwidth savings, or **Original (4K Ultra)** for uncompressed master artwork.
 
 * **Waybar Quick HUD & Solstice Dock**
   * Floating edge-snapping Waybar quick rail with hover flyouts for fast source toggling.
@@ -95,7 +117,7 @@ pnpm zip:firefox  # Firefox MV2 (.output/isekai-tab-0.1.0-firefox.zip)
 
 ---
 
-## 🍡 Contributing
+## Contributing
 
 Contributions of all kinds are welcome! Check out the [Contributing Guide](CONTRIBUTING.md) to set up your local environment and view our [Code of Conduct](CODE_OF_CONDUCT.md).
 

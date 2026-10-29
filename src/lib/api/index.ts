@@ -1,4 +1,4 @@
-import type { WallpaperItem, SortFilter, TimeFilter, WallpaperSource, IndividualSource, GitHubRepoId } from '../types';
+import type { WallpaperItem, SortFilter, TimeFilter, WallpaperSource, IndividualSource, GitHubRepoId, ImageQuality } from '../types';
 import { fetchWallhavenWallpapers } from './wallhaven';
 import { fetchKonachanWallpapers } from './konachan';
 import { fetchGitHubWallpapers } from './github';
@@ -11,6 +11,7 @@ export interface FetchOptions {
   sort?: SortFilter;
   time?: TimeFilter;
   nsfw?: boolean;
+  quality?: ImageQuality;
 }
 
 function shuffle<T>(array: T[]): T[] {
@@ -23,7 +24,7 @@ function shuffle<T>(array: T[]): T[] {
 }
 
 export async function fetchWallpapers(options: FetchOptions): Promise<WallpaperItem[]> {
-  const { sort = 'hot', time = 'week', nsfw = false } = options;
+  const { sort = 'hot', time = 'week', nsfw = false, quality = 'balanced' } = options;
 
   let targetSources: IndividualSource[] = [];
   if (options.sources && options.sources.length > 0) {
@@ -43,9 +44,9 @@ export async function fetchWallpapers(options: FetchOptions): Promise<WallpaperI
           const stored = await getAllCustomWallpapers();
           return shuffle(stored.map(convertStoredToWallpaperItem));
         } else if (src === 'wallhaven') {
-          return await fetchWallhavenWallpapers({ sort, time, nsfw });
+          return await fetchWallhavenWallpapers({ sort, time, nsfw, quality });
         } else if (src === 'konachan') {
-          return await fetchKonachanWallpapers({ sort, time, nsfw });
+          return await fetchKonachanWallpapers({ sort, time, nsfw, quality });
         } else if (src === 'cozypixels' || (src as string) === 'github') {
           return await fetchGitHubWallpapers(options.githubRepos);
         }
@@ -78,7 +79,7 @@ export async function fetchWallpapers(options: FetchOptions): Promise<WallpaperI
   if (results.length === 0) {
     console.warn('All target sources returned 0 wallpapers; activating graceful fallback.');
     try {
-      results = await fetchWallhavenWallpapers({ sort, time, nsfw });
+      results = await fetchWallhavenWallpapers({ sort, time, nsfw, quality });
     } catch {
       try {
         results = await fetchGitHubWallpapers(['cozypixels']);
