@@ -17,21 +17,32 @@ export default defineBackground(() => {
       'url' in message &&
       typeof message.url === 'string'
     ) {
-      fetch(message.url, {
-        signal: AbortSignal.timeout(10000),
-      })
-        .then(async (res) => {
+      const executeFetch = async (attempt = 0): Promise<void> => {
+        try {
+          const res = await fetch(message.url, {
+            signal: AbortSignal.timeout(10000),
+          });
           if (!res.ok) {
+            if ((res.status >= 500 || res.status === 429) && attempt < 1) {
+              await new Promise((r) => setTimeout(r, 800));
+              return executeFetch(attempt + 1);
+            }
             sendResponse({ ok: false, error: `HTTP ${res.status}` });
             return;
           }
           const data = await res.json();
           sendResponse({ ok: true, data });
-        })
-        .catch((err: Error) => {
-          sendResponse({ ok: false, error: err?.message || 'Fetch failed' });
-        });
+        } catch (err: unknown) {
+          if (attempt < 1) {
+            await new Promise((r) => setTimeout(r, 800));
+            return executeFetch(attempt + 1);
+          }
+          const errorMsg = err instanceof Error ? err.message : 'Fetch failed';
+          sendResponse({ ok: false, error: errorMsg });
+        }
+      };
 
+      executeFetch();
       return true;
     }
   });

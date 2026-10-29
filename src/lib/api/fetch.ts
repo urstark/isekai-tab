@@ -21,16 +21,30 @@ export async function fetchJsonSafe<T>(url: string, timeoutMs = 8000): Promise<T
       if (response.ok && response.data !== undefined) {
         return response.data;
       }
-    } catch {
-      // Fall through to standard fetch
+      if (response.error && response.error.startsWith('HTTP ')) {
+        throw new Error(response.error);
+      }
+    } catch (err) {
+      if (err instanceof Error && err.message.startsWith('HTTP ')) {
+        throw err;
+      }
+      // Fall through to direct fetch if runtime communication failed
     }
   }
 
-  const res = await fetch(url, {
-    signal: AbortSignal.timeout(timeoutMs),
-  });
-  if (!res.ok) {
-    throw new Error(`HTTP ${res.status}`);
-  }
-  return (await res.json()) as T;
+  const directFetch = async (attempt = 0): Promise<T> => {
+    const res = await fetch(url, {
+      signal: AbortSignal.timeout(timeoutMs),
+    });
+    if (!res.ok) {
+      if ((res.status >= 500 || res.status === 429) && attempt < 1) {
+        await new Promise((r) => setTimeout(r, 800));
+        return directFetch(attempt + 1);
+      }
+      throw new Error(`HTTP ${res.status}`);
+    }
+    return (await res.json()) as T;
+  };
+
+  return directFetch();
 }

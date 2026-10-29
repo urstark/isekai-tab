@@ -58,7 +58,7 @@ async function getCachedPaths(storageKey: string, fallback: string[]): Promise<s
       }
     }
   } catch (e) {
-    console.warn(`Error reading cached paths for ${storageKey}:`, e);
+    console.warn(`Error reading cached paths for ${storageKey}: ${e instanceof Error ? e.message : String(e)}`);
   }
   return fallback;
 }
@@ -72,7 +72,7 @@ async function saveCachedPaths(storageKey: string, paths: string[]): Promise<voi
       localStorage.setItem(storageKey, JSON.stringify(payload));
     }
   } catch (e) {
-    console.warn(`Error saving cached paths for ${storageKey}:`, e);
+    console.warn(`Error saving cached paths for ${storageKey}: ${e instanceof Error ? e.message : String(e)}`);
   }
 }
 
@@ -111,7 +111,7 @@ async function getRepoImagePaths(
         }
       }
   } catch (err) {
-    console.warn(`GitHub API tree fetch failed for ${repoFullName}, using fallback:`, err);
+    console.warn(`GitHub API tree fetch failed for ${repoFullName}, using fallback: ${err instanceof Error ? err.message : String(err)}`);
   }
 
   return fallbackPaths;

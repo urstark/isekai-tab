@@ -73,7 +73,7 @@ export async function getAllCustomWallpapers(): Promise<StoredCustomWallpaper[]>
       req.onerror = () => reject(req.error);
     });
   } catch (err) {
-    console.warn('Failed to load custom wallpapers from IndexedDB:', err);
+    console.warn(`Failed to load custom wallpapers from IndexedDB: ${err instanceof Error ? err.message : String(err)}`);
     return [];
   }
 }

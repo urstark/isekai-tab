@@ -52,7 +52,7 @@ export async function fetchWallpapers(options: FetchOptions): Promise<WallpaperI
         }
         return [];
       } catch (err) {
-        console.warn(`Source ${src} fetch error:`, err);
+        console.warn(`Source ${src} fetch error: ${err instanceof Error ? err.message : String(err)}`);
         return [];
       }
     });
@@ -72,17 +72,17 @@ export async function fetchWallpapers(options: FetchOptions): Promise<WallpaperI
       }
     }
   } catch (err) {
-    console.warn('Failed to aggregate wallpapers:', err);
+    console.warn(`Failed to aggregate wallpapers: ${err instanceof Error ? err.message : String(err)}`);
   }
 
-  // fall back to Wallhaven then CozyPixels so the app never freezes with an empty wallpaper pool
+  // Fall back to CozyPixels (offline-safe) then Wallhaven so the app never freezes with an empty wallpaper pool
   if (results.length === 0) {
     console.warn('All target sources returned 0 wallpapers; activating graceful fallback.');
     try {
-      results = await fetchWallhavenWallpapers({ sort, time, nsfw, quality });
+      results = await fetchGitHubWallpapers(['cozypixels']);
     } catch {
       try {
-        results = await fetchGitHubWallpapers(['cozypixels']);
+        results = await fetchWallhavenWallpapers({ sort, time, nsfw, quality });
       } catch {
         results = [];
       }

@@ -71,7 +71,7 @@ export async function loadAndApplyCustomFont(): Promise<string | null> {
     document.fonts.add(fontFace);
     return stored.name;
   } catch (err) {
-    console.warn('Failed to load custom font:', err);
+    console.warn(`Failed to load custom font: ${err instanceof Error ? err.message : String(err)}`);
     return null;
   }
 }

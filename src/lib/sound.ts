@@ -34,7 +34,7 @@ export function playRollSound() {
       oscillator.stop(start + 0.1);
     });
   } catch (err) {
-    console.warn('Audio playback error:', err);
+    console.warn(`Audio playback error: ${err instanceof Error ? err.message : String(err)}`);
   }
 }
 

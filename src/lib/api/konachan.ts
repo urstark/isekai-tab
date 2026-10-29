@@ -31,6 +31,44 @@ function cleanBooruTags(rawTags: string): string {
     .join(' • ');
 }
 
+const CACHE_KEY = 'isekai_cache_konachan_items';
+
+async function getCachedKonachanWallpapers(): Promise<WallpaperItem[]> {
+  try {
+    if (typeof chrome !== 'undefined' && chrome.storage?.local) {
+      const data = await chrome.storage.local.get(CACHE_KEY);
+      const entry = data[CACHE_KEY] as { items?: WallpaperItem[]; timestamp?: number } | undefined;
+      if (entry?.items && Array.isArray(entry.items) && entry.items.length > 0) {
+        return entry.items;
+      }
+    } else if (typeof localStorage !== 'undefined') {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed.items) && parsed.items.length > 0) {
+          return parsed.items;
+        }
+      }
+    }
+  } catch {
+    // Ignore cache retrieval failure
+  }
+  return [];
+}
+
+async function saveCachedKonachanWallpapers(items: WallpaperItem[]): Promise<void> {
+  if (!items || items.length === 0) return;
+  const payload = { items: items.slice(0, 60), timestamp: Date.now() };
+  try {
+    if (typeof chrome !== 'undefined' && chrome.storage?.local) {
+      await chrome.storage.local.set({ [CACHE_KEY]: payload });
+    } else if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(payload));
+    }
+  } catch {
+  }
+}
+
 async function fetchFromMoebooru(
   endpointUrl: string,
   siteName: string,
@@ -82,7 +120,7 @@ async function fetchFromMoebooru(
         };
       });
   } catch (err) {
-    console.warn(`Error fetching ${siteName}:`, err);
+    console.warn(`Error fetching ${siteName}: ${err instanceof Error ? err.message : String(err)}`);
     return [];
   }
 }
@@ -102,27 +140,43 @@ export async function fetchKonachanWallpapers(options: {
 
   const items: WallpaperItem[] = [];
 
-  if (nsfw) {
-    const yandeUrl = `https://yande.re/post.json?limit=50&page=${page}&tags=rating:questionable+width:1920..+${orderTag}`;
-    const nsfwItems = await fetchFromMoebooru(yandeUrl, 'Yande.re', true, quality);
-    items.push(...nsfwItems);
-  } else {
-    const [kcItems, ydItems] = await Promise.all([
-      fetchFromMoebooru(
-        `https://konachan.net/post.json?limit=40&page=${page}&tags=rating:safe+width:1920..+${orderTag}`,
-        'Konachan',
-        false,
-        quality
-      ),
-      fetchFromMoebooru(
-        `https://yande.re/post.json?limit=30&page=${page}&tags=rating:safe+width:1920..+${orderTag}`,
-        'Yande.re',
-        false,
-        quality
-      ),
-    ]);
+  try {
+    if (nsfw) {
+      const yandeUrl = `https://yande.re/post.json?limit=50&page=${page}&tags=rating:questionable+width:1920..+${orderTag}`;
+      const nsfwItems = await fetchFromMoebooru(yandeUrl, 'Yande.re', true, quality);
+      items.push(...nsfwItems);
+    } else {
+      const [kcItems, ydItems] = await Promise.all([
+        fetchFromMoebooru(
+          `https://konachan.net/post.json?limit=40&page=${page}&tags=rating:safe+width:1920..+${orderTag}`,
+          'Konachan',
+          false,
+          quality
+        ),
+        fetchFromMoebooru(
+          `https://yande.re/post.json?limit=30&page=${page}&tags=rating:safe+width:1920..+${orderTag}`,
+          'Yande.re',
+          false,
+          quality
+        ),
+      ]);
 
-    items.push(...kcItems, ...ydItems);
+      items.push(...kcItems, ...ydItems);
+    }
+
+    if (items.length > 0) {
+      await saveCachedKonachanWallpapers(items);
+    } else {
+      const cached = await getCachedKonachanWallpapers();
+      if (cached.length > 0) {
+        items.push(...cached);
+      }
+    }
+  } catch {
+    const cached = await getCachedKonachanWallpapers();
+    if (cached.length > 0) {
+      items.push(...cached);
+    }
   }
 
   for (let i = items.length - 1; i > 0; i--) {

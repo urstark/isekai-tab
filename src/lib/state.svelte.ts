@@ -302,7 +302,7 @@ class Store {
       }
       this.purgeDisabledSourceItems();
     } catch (e) {
-      console.warn('Failed to load isekai state', e);
+      console.warn(`Failed to load isekai state: ${e instanceof Error ? e.message : String(e)}`);
     }
   }
 
@@ -338,7 +338,7 @@ class Store {
         chrome.storage.local.set({ [STORAGE_KEY]: data }).catch(() => {});
       }
     } catch (e) {
-      console.warn('Failed to save isekai state', e);
+      console.warn(`Failed to save isekai state: ${e instanceof Error ? e.message : String(e)}`);
     }
   }
 
@@ -394,7 +394,7 @@ class Store {
       const stored = await getAllCustomWallpapers();
       this.customWallpapers = stored.map(convertStoredToWallpaperItem);
     } catch (err) {
-      console.warn('Failed to load custom wallpapers:', err);
+      console.warn(`Failed to load custom wallpapers: ${err instanceof Error ? err.message : String(err)}`);
     }
   }
 
@@ -478,7 +478,7 @@ class Store {
       this.applyTheme();
       this.saveState();
     } catch (err) {
-      console.warn('Failed to upload custom font:', err);
+      console.warn(`Failed to upload custom font: ${err instanceof Error ? err.message : String(err)}`);
     }
   }
 
@@ -555,7 +555,7 @@ class Store {
         this.saveState();
       }
     } catch (e) {
-      console.warn('Failed to load wallpapers', e);
+      console.warn(`Failed to load wallpapers: ${e instanceof Error ? e.message : String(e)}`);
     } finally {
       this.isFetching = false;
       if (!this.currentWallpaper.url) {
