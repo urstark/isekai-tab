@@ -20,5 +20,11 @@ export default defineConfig({
       'https://*.yande.re/*',
       'https://files.yande.re/*',
     ],
+    browser_specific_settings: {
+      gecko: {
+        id: 'isekai-tab@urstark.dev',
+        strict_min_version: '109.0',
+      },
+    },
   },
 });
