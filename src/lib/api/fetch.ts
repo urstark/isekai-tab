@@ -1,4 +1,4 @@
-export async function fetchJsonSafe<T>(url: string, timeoutMs = 8000): Promise<T> {
+export async function fetchJsonSafe<T>(url: string, timeoutMs = 8000, headers?: Record<string, string>): Promise<T> {
   const runtime =
     typeof chrome !== 'undefined' && chrome.runtime
       ? chrome.runtime
@@ -9,7 +9,7 @@ export async function fetchJsonSafe<T>(url: string, timeoutMs = 8000): Promise<T
   if (runtime?.sendMessage) {
     try {
       const response = await new Promise<{ ok: boolean; data?: T; error?: string }>((resolve) => {
-        runtime.sendMessage({ type: 'PROXY_FETCH_JSON', url }, (res) => {
+        runtime.sendMessage({ type: 'PROXY_FETCH_JSON', url, headers }, (res) => {
           if (runtime.lastError || !res) {
             resolve({ ok: false, error: runtime.lastError?.message || 'No response' });
           } else {
@@ -34,6 +34,7 @@ export async function fetchJsonSafe<T>(url: string, timeoutMs = 8000): Promise<T
 
   const directFetch = async (attempt = 0): Promise<T> => {
     const res = await fetch(url, {
+      headers,
       signal: AbortSignal.timeout(timeoutMs),
     });
     if (!res.ok) {

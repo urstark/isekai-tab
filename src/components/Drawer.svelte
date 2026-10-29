@@ -426,6 +426,90 @@
                 </button>
               </div>
 
+              {#if store.isSourceEnabled('wallhaven')}
+                <div class="wallhaven-subconfig-block">
+                  <div class="subrepo-header">
+                    <span class="subrepo-title">Wallhaven Preferences</span>
+                    <span class="subrepo-desc">Categories & optional API key</span>
+                  </div>
+
+                  <div class="subconfig-row">
+                    <span class="subconfig-label">Categories</span>
+                    <div class="source-pills-row sub-pills-row">
+                      <button
+                        type="button"
+                        class="source-pill sub-pill btn-spring"
+                        class:active={store.isWallhavenCategoryEnabled('anime')}
+                        onclick={() => store.toggleWallhavenCategory('anime')}
+                        title="Anime & Manga artwork"
+                      >
+                        {#if store.isWallhavenCategoryEnabled('anime')}✓ {/if}Anime
+                      </button>
+                      <button
+                        type="button"
+                        class="source-pill sub-pill btn-spring"
+                        class:active={store.isWallhavenCategoryEnabled('general')}
+                        onclick={() => store.toggleWallhavenCategory('general')}
+                        title="General wallpapers (nature, abstract, scenery)"
+                      >
+                        {#if store.isWallhavenCategoryEnabled('general')}✓ {/if}General
+                      </button>
+                      <button
+                        type="button"
+                        class="source-pill sub-pill btn-spring"
+                        class:active={store.isWallhavenCategoryEnabled('people')}
+                        onclick={() => store.toggleWallhavenCategory('people')}
+                        title="People and character photos"
+                      >
+                        {#if store.isWallhavenCategoryEnabled('people')}✓ {/if}People
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="subconfig-row">
+                    <div class="api-key-header">
+                      <span class="subconfig-label">API Key (Optional)</span>
+                      <a
+                        href="https://wallhaven.cc/settings/api"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="api-link"
+                      >
+                        Get Wallhaven API Key ↗
+                      </a>
+                    </div>
+                    <div class="api-key-input-wrap">
+                      <input
+                        type="password"
+                        placeholder="Paste your Wallhaven API key..."
+                        value={store.settings.wallhavenApiKey || ''}
+                        onchange={(e) => store.setWallhavenApiKey((e.target as HTMLInputElement).value)}
+                        class="glass-input api-key-field"
+                      />
+                      {#if store.settings.wallhavenApiKey}
+                        <button
+                          type="button"
+                          class="clear-key-btn"
+                          onclick={() => store.setWallhavenApiKey('')}
+                          title="Clear API key"
+                        >
+                          ✕
+                        </button>
+                      {/if}
+                    </div>
+                    {#if store.settings.wallhavenApiKey}
+                      <p class="api-key-hint active-hint">
+                        ✓ API Key Active — Full NSFW unlocked & immune to anonymous rate limits (45 req/min).
+                      </p>
+                    {:else}
+                      <p class="api-key-hint">
+                        Wallhaven requires an API key for full NSFW access and provides higher request rate limits.
+                      </p>
+                    {/if}
+                  </div>
+                </div>
+              {/if}
+
               {#if store.isSourceEnabled('cozypixels')}
                 <div class="github-subrepos-block">
                   <div class="subrepo-header">
@@ -1770,6 +1854,98 @@
     font-weight: 600;
     border: none;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 1px 0 #ffffff;
+  }
+
+  .wallhaven-subconfig-block {
+    margin-top: 12px;
+    padding: 14px 18px;
+    background: rgba(0, 0, 0, 0.22);
+    border: none;
+    border-top: var(--glass-border-highlight);
+    border-radius: var(--radius-md);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.35), var(--glass-specular-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .subconfig-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .subconfig-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+  }
+
+  .api-key-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .api-link {
+    font-size: 11px;
+    color: var(--accent);
+    text-decoration: none;
+    opacity: 0.85;
+    transition: opacity 0.15s ease;
+  }
+
+  .api-link:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+
+  .api-key-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .glass-input.api-key-field {
+    padding-left: 14px;
+    padding-right: 36px;
+    font-family: monospace;
+    letter-spacing: 0.04em;
+    font-size: 12px;
+  }
+
+  .clear-key-btn {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s ease;
+  }
+
+  .clear-key-btn:hover {
+    color: #ffffff;
+  }
+
+  .api-key-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .api-key-hint.active-hint {
+    color: #4ade80;
+    font-weight: 500;
   }
 
   /* Keyboard Shortcuts Grid */

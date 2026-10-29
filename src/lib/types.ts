@@ -47,6 +47,12 @@ export interface PresetFont {
 
 export type QuickHudPosition = 'right' | 'top' | 'hidden';
 
+export interface WallhavenCategories {
+  general: boolean;
+  anime: boolean;
+  people: boolean;
+}
+
 export interface AppSettings {
   soundEffects: boolean;
   rerollFlash: boolean;
@@ -68,6 +74,8 @@ export interface AppSettings {
   customFontHeadingName?: string;
   quickHudPosition?: QuickHudPosition;
   imageQuality: ImageQuality;
+  wallhavenApiKey?: string;
+  wallhavenCategories?: WallhavenCategories;
 }
 
 export interface AppTheme {

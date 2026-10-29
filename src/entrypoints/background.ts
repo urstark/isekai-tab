@@ -17,9 +17,14 @@ export default defineBackground(() => {
       'url' in message &&
       typeof message.url === 'string'
     ) {
+      const headers = 'headers' in message && typeof message.headers === 'object' && message.headers
+        ? (message.headers as Record<string, string>)
+        : undefined;
+
       const executeFetch = async (attempt = 0): Promise<void> => {
         try {
           const res = await fetch(message.url, {
+            headers,
             signal: AbortSignal.timeout(10000),
           });
           if (!res.ok) {

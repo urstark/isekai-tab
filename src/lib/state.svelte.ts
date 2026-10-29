@@ -157,6 +157,8 @@ class Store {
     customFontHeadingName: undefined,
     quickHudPosition: 'right',
     imageQuality: 'balanced',
+    wallhavenApiKey: '',
+    wallhavenCategories: { general: false, anime: true, people: false },
   });
 
   constructor() {
@@ -234,6 +236,10 @@ class Store {
           this.settings.fontBody,
           this.settings.quickHudPosition,
           this.settings.imageQuality,
+          this.settings.wallhavenApiKey,
+          this.settings.wallhavenCategories?.general,
+          this.settings.wallhavenCategories?.anime,
+          this.settings.wallhavenCategories?.people,
           this.currentWallpaper.id,
           this.history.length,
         ];
@@ -269,6 +275,14 @@ class Store {
             ? data.settings.showVersionBadge
             : true,
           imageQuality: data.settings.imageQuality === 'original' ? 'original' : 'balanced',
+          wallhavenApiKey: typeof data.settings.wallhavenApiKey === 'string' ? data.settings.wallhavenApiKey : '',
+          wallhavenCategories: data.settings.wallhavenCategories && typeof data.settings.wallhavenCategories === 'object'
+            ? {
+                general: !!data.settings.wallhavenCategories.general,
+                anime: data.settings.wallhavenCategories.anime !== false,
+                people: !!data.settings.wallhavenCategories.people,
+              }
+            : { general: false, anime: true, people: false },
         };
       }
       if (data.sort) this.sort = data.sort;
@@ -486,6 +500,8 @@ class Store {
     await removeCustomFont();
     this.settings.fontHeading = 'montserrat';
     this.settings.customFontHeadingName = undefined;
+    this.settings.wallhavenApiKey = '';
+    this.settings.wallhavenCategories = { general: false, anime: true, people: false };
     this.applyTheme();
     this.saveState();
   }
@@ -513,6 +529,8 @@ class Store {
         time: this.time,
         nsfw: this.nsfw,
         quality: this.settings.imageQuality,
+        wallhavenApiKey: this.settings.wallhavenApiKey,
+        wallhavenCategories: this.settings.wallhavenCategories,
       });
 
       let validItems = items.filter((x) => this.isItemSourceEnabled(x) && !!x.url);
@@ -655,6 +673,33 @@ class Store {
 
   isGitHubRepoEnabled(id: GitHubRepoId): boolean {
     return this.settings.enabledGitHubRepos.includes(id);
+  }
+
+  setWallhavenApiKey(key: string) {
+    this.settings.wallhavenApiKey = key.trim();
+    this.saveState();
+    if (this.isSourceEnabled('wallhaven')) {
+      this.wallpaperQueue = [];
+      this.loadLiveWallpapers(true);
+    }
+  }
+
+  toggleWallhavenCategory(cat: 'general' | 'anime' | 'people') {
+    const current = this.settings.wallhavenCategories || { general: false, anime: true, people: false };
+    const updated = { ...current, [cat]: !current[cat] };
+    if (!updated.general && !updated.anime && !updated.people) {
+      return;
+    }
+    this.settings.wallhavenCategories = updated;
+    this.saveState();
+    if (this.isSourceEnabled('wallhaven')) {
+      this.wallpaperQueue = [];
+      this.loadLiveWallpapers(true);
+    }
+  }
+
+  isWallhavenCategoryEnabled(cat: 'general' | 'anime' | 'people'): boolean {
+    return !!this.settings.wallhavenCategories?.[cat];
   }
 
   selectSingleSource(source: IndividualSource) {
@@ -836,6 +881,8 @@ class Store {
     this.settings.fontHeading = 'montserrat';
     this.settings.fontBody = 'plus-jakarta';
     this.settings.customFontHeadingName = undefined;
+    this.settings.wallhavenApiKey = '';
+    this.settings.wallhavenCategories = { general: false, anime: true, people: false };
 
     this.sort = 'hot';
     this.time = 'week';

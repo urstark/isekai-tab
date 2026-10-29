@@ -112,6 +112,33 @@
       category: 'Source',
       action: () => store.toggleSource('custom'),
     },
+    {
+      id: 'src-wh-anime',
+      title: `Wallhaven Category: Anime (${store.isWallhavenCategoryEnabled('anime') ? 'Active ✓' : 'Disabled'})`,
+      category: 'Source',
+      action: () => store.toggleWallhavenCategory('anime'),
+    },
+    {
+      id: 'src-wh-general',
+      title: `Wallhaven Category: General (${store.isWallhavenCategoryEnabled('general') ? 'Active ✓' : 'Disabled'})`,
+      category: 'Source',
+      action: () => store.toggleWallhavenCategory('general'),
+    },
+    {
+      id: 'src-wh-people',
+      title: `Wallhaven Category: People (${store.isWallhavenCategoryEnabled('people') ? 'Active ✓' : 'Disabled'})`,
+      category: 'Source',
+      action: () => store.toggleWallhavenCategory('people'),
+    },
+    {
+      id: 'pref-wallhaven-key',
+      title: `Wallhaven API Key: ${store.settings.wallhavenApiKey ? 'Configured (✓)' : 'Not Set (Click to configure)'}`,
+      category: 'Preferences',
+      action: () => {
+        store.activeTab = 'settings';
+        store.isMenuVisible = true;
+      },
+    },
 
     {
       id: 'nav-custom',

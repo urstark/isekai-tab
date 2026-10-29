@@ -51,7 +51,6 @@ async function getCachedKonachanWallpapers(): Promise<WallpaperItem[]> {
       }
     }
   } catch {
-    // Ignore cache retrieval failure
   }
   return [];
 }

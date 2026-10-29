@@ -1,4 +1,13 @@
-import type { WallpaperItem, SortFilter, TimeFilter, WallpaperSource, IndividualSource, GitHubRepoId, ImageQuality } from '../types';
+import type {
+  WallpaperItem,
+  SortFilter,
+  TimeFilter,
+  WallpaperSource,
+  IndividualSource,
+  GitHubRepoId,
+  ImageQuality,
+  WallhavenCategories,
+} from '../types';
 import { fetchWallhavenWallpapers } from './wallhaven';
 import { fetchKonachanWallpapers } from './konachan';
 import { fetchGitHubWallpapers } from './github';
@@ -12,6 +21,8 @@ export interface FetchOptions {
   time?: TimeFilter;
   nsfw?: boolean;
   quality?: ImageQuality;
+  wallhavenApiKey?: string;
+  wallhavenCategories?: WallhavenCategories;
 }
 
 function shuffle<T>(array: T[]): T[] {
@@ -44,7 +55,14 @@ export async function fetchWallpapers(options: FetchOptions): Promise<WallpaperI
           const stored = await getAllCustomWallpapers();
           return shuffle(stored.map(convertStoredToWallpaperItem));
         } else if (src === 'wallhaven') {
-          return await fetchWallhavenWallpapers({ sort, time, nsfw, quality });
+          return await fetchWallhavenWallpapers({
+            sort,
+            time,
+            nsfw,
+            quality,
+            apiKey: options.wallhavenApiKey,
+            categories: options.wallhavenCategories,
+          });
         } else if (src === 'konachan') {
           return await fetchKonachanWallpapers({ sort, time, nsfw, quality });
         } else if (src === 'cozypixels' || (src as string) === 'github') {
@@ -82,7 +100,14 @@ export async function fetchWallpapers(options: FetchOptions): Promise<WallpaperI
       results = await fetchGitHubWallpapers(['cozypixels']);
     } catch {
       try {
-        results = await fetchWallhavenWallpapers({ sort, time, nsfw, quality });
+        results = await fetchWallhavenWallpapers({
+          sort,
+          time,
+          nsfw,
+          quality,
+          apiKey: options.wallhavenApiKey,
+          categories: options.wallhavenCategories,
+        });
       } catch {
         results = [];
       }

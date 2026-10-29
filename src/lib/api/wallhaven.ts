@@ -1,4 +1,4 @@
-import type { WallpaperItem, SortFilter, TimeFilter, ImageQuality } from '../types';
+import type { WallpaperItem, SortFilter, TimeFilter, ImageQuality, WallhavenCategories } from '../types';
 import { fetchJsonSafe } from './fetch';
 
 const CACHE_KEY = 'isekai_cache_wallhaven_items';
@@ -53,8 +53,10 @@ export async function fetchWallhavenWallpapers(options: {
   nsfw?: boolean;
   page?: number;
   quality?: ImageQuality;
+  apiKey?: string;
+  categories?: WallhavenCategories;
 }): Promise<WallpaperItem[]> {
-  const { sort = 'hot', time = 'week', nsfw = false, quality = 'balanced' } = options;
+  const { sort = 'hot', time = 'week', nsfw = false, quality = 'balanced', apiKey = '', categories } = options;
   const page = options.page ?? (sort === 'new' ? 1 : Math.floor(Math.random() * 3) + 1);
 
   let sorting = 'toplist';
@@ -81,11 +83,25 @@ export async function fetchWallhavenWallpapers(options: {
   else if (time === 'month') topRange = '1M';
   else if (time === 'year') topRange = '1y';
 
-  // 010 = Anime category. Purity: 100 = SFW, 010 = Sketchy / Ecchi anime
-  const purity = nsfw ? '010' : '100';
+  const cleanApiKey = apiKey.trim();
+  const hasKey = cleanApiKey.length > 0;
+
+  let catBits = '010';
+  if (categories) {
+    const g = categories.general ? '1' : '0';
+    const a = categories.anime ? '1' : '0';
+    const p = categories.people ? '1' : '0';
+    catBits = `${g}${a}${p}`;
+    if (catBits === '000') catBits = '010';
+  }
+
+  let purity = '100';
+  if (nsfw) {
+    purity = hasKey ? '011' : '010';
+  }
 
   const params = new URLSearchParams({
-    categories: '010',
+    categories: catBits,
     purity,
     sorting,
     ratios: '16x9,16x10,21x9',
@@ -95,6 +111,9 @@ export async function fetchWallhavenWallpapers(options: {
 
   if (q) params.set('q', q);
   if (sorting === 'toplist') params.set('topRange', topRange);
+  if (hasKey) params.set('apikey', cleanApiKey);
+
+  const headers = hasKey ? { 'X-API-Key': cleanApiKey } : undefined;
 
   try {
     const json = await fetchJsonSafe<{
@@ -109,7 +128,7 @@ export async function fetchWallhavenWallpapers(options: {
         url?: string;
         purity?: string;
       }>
-    }>(`https://wallhaven.cc/api/v1/search?${params}`, 8000);
+    }>(`https://wallhaven.cc/api/v1/search?${params}`, 8000, headers);
     if (!json.data || !Array.isArray(json.data) || json.data.length === 0) {
       const cached = await getCachedWallhavenWallpapers();
       return cached.length > 0 ? shuffle(cached) : [];

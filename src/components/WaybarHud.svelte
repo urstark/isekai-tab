@@ -101,6 +101,43 @@
           </div>
         </div>
 
+        {#if store.isSourceEnabled('wallhaven')}
+          <div class="flyout-group github-subgroup">
+            <div class="flyout-label-row">
+              <span class="flyout-label">Wallhaven Categories</span>
+              {#if store.settings.wallhavenApiKey}
+                <span class="flyout-subhint" style="color: #4ade80;">API Key Active</span>
+              {/if}
+            </div>
+            <div class="flyout-pills-row">
+              <button
+                type="button"
+                class="flyout-pill subpill pill-spring"
+                class:active={store.isWallhavenCategoryEnabled('anime')}
+                onclick={() => store.toggleWallhavenCategory('anime')}
+              >
+                {#if store.isWallhavenCategoryEnabled('anime')}✓ {/if}Anime
+              </button>
+              <button
+                type="button"
+                class="flyout-pill subpill pill-spring"
+                class:active={store.isWallhavenCategoryEnabled('general')}
+                onclick={() => store.toggleWallhavenCategory('general')}
+              >
+                {#if store.isWallhavenCategoryEnabled('general')}✓ {/if}General
+              </button>
+              <button
+                type="button"
+                class="flyout-pill subpill pill-spring"
+                class:active={store.isWallhavenCategoryEnabled('people')}
+                onclick={() => store.toggleWallhavenCategory('people')}
+              >
+                {#if store.isWallhavenCategoryEnabled('people')}✓ {/if}People
+              </button>
+            </div>
+          </div>
+        {/if}
+
         {#if store.isSourceEnabled('cozypixels')}
           <div class="flyout-group github-subgroup">
             <div class="flyout-label-row">
