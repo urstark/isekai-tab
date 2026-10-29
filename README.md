@@ -1,29 +1,66 @@
-<p align="center">
-  <img src=".github/assets/home.png" alt="Isekai Tab Overview" width="85%">
-</p>
+<div align="center">
 
-<h1 align="center">⛩️ Isekai Tab</h1>
+  <img src="public/icon/128.png" width="96" height="96" alt="Isekai Tab Logo" style="border-radius: 20%;">
 
-<p align="center">
-  <strong>A sleek, keyboard-first anime & Linux ricing new tab extension for modern browsers.</strong>
-</p>
+  <h1>⛩️ Isekai Tab</h1>
 
-<p align="center">
-  Every new tab transports you into an anime world. Clean dark interface with glassmorphic effect inspired by Waybar, Hyprland, and Rofi.
-</p>
+  <p align="center">
+    <strong>A sleek, keyboard-first anime & Linux ricing new tab extension for modern browsers.</strong>
+    <br />
+    <em>Every new tab transports you into an anime world with glassmorphic Waybar HUD and dark aesthetics.</em>
+  </p>
 
----
+  <p align="center">
+    <a href="#-showcase"><b>Showcase</b></a> •
+    <a href="#-highlights"><b>Features</b></a> •
+    <a href="#-installation"><b>Installation</b></a> •
+    <a href="#keyboard-shortcuts"><b>Shortcuts</b></a> •
+    <a href="https://github.com/urstark/isekai-tab/releases"><b>Releases</b></a>
+  </p>
 
-## 👀 Demo 
+  <div align="center">
+    <img src="https://img.shields.io/github/v/release/urstark/isekai-tab?style=for-the-badge&color=e58e26&labelColor=16171b&logo=github" alt="Latest Version" />
+    <img src="https://img.shields.io/github/stars/urstark/isekai-tab?style=for-the-badge&color=e58e26&labelColor=16171b&logo=github" alt="Stars" />
+    <img src="https://img.shields.io/github/license/urstark/isekai-tab?style=for-the-badge&color=e58e26&labelColor=16171b" alt="License" />
+  </div>
 
-| Command Palette (`Ctrl+K` / `Space`) | Settings Drawer & Feed Controls |
-| :---: | :---: |
-| <img src=".github/assets/search.png" alt="Command Palette" width="100%"> | <img src=".github/assets/menu.png" alt="Settings Drawer" width="100%"> |
+  <br />
 
-<p align="center">
-  <strong>Minimalist Incognito Mode (<kbd>I</kbd>)</strong><br>
-  <img src=".github/assets/incognito.png" alt="Minimalist Incognito Mode" width="85%">
-</p>
+  <img src=".github/assets/home.png" alt="Isekai Tab Hero Overview" width="85%" />
+  <br />
+  <sub><em>Default Desktop Canvas with Waybar HUD and Solstice glassmorphism</em></sub>
+
+</div>
+
+<hr />
+
+## 📸 Showcase
+
+<div align="center" id="showcase">
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src=".github/assets/search.png" alt="Command Palette" width="100%" />
+      <br />
+      <sub><b>Command Palette (<kbd>Ctrl+K</kbd> / <kbd>Space</kbd>)</b></sub>
+    </td>
+    <td align="center" width="50%">
+      <img src=".github/assets/menu.png" alt="Settings & Feeds" width="100%" />
+      <br />
+      <sub><b>Settings Drawer & Feeds Management</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <img src=".github/assets/incognito.png" alt="Minimalist Incognito Mode" width="85%" />
+      <br />
+      <sub><b>Minimalist Incognito Privacy Canvas (<kbd>I</kbd>)</b></sub>
+    </td>
+  </tr>
+</table>
+
+</div>
 
 ---
 
