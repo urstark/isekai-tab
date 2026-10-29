@@ -105,8 +105,15 @@ function createThumbnailFromFile(file: File): Promise<string> {
   });
 }
 
+function pruneHistory(items: WallpaperItem[], maxNonFavs = 40): WallpaperItem[] {
+  const favorites = items.filter((x) => x.favorite);
+  const nonFavorites = items.filter((x) => !x.favorite).slice(0, maxNonFavs);
+  return [...favorites, ...nonFavorites.filter((n) => !favorites.some((f) => f.id === n.id))];
+}
+
 class Store {
   private isHydrated = false;
+  private wallhavenDebounceTimer: ReturnType<typeof setTimeout> | null = null;
   isFetching = $state<boolean>(false);
   wallpaperQueue = $state<WallpaperItem[]>([]);
   customWallpapers = $state<WallpaperItem[]>([]);
@@ -162,6 +169,7 @@ class Store {
   });
 
   constructor() {
+    const rawLocal = typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
     this.loadState();
 
     let didRotateOnStart = false;
@@ -185,7 +193,7 @@ class Store {
         this.currentWallpaper = nextItem;
         didRotateOnStart = true;
         if (!this.history.some((x) => x.id === nextItem.id)) {
-          this.history = [nextItem, ...this.history].slice(0, 50);
+          this.history = pruneHistory([nextItem, ...this.history], 40);
           this.historyIndex = 0;
         } else {
           this.historyIndex = this.history.findIndex((x) => x.id === nextItem.id);
@@ -211,8 +219,67 @@ class Store {
       !this.isItemSourceEnabled(this.currentWallpaper);
     this.loadLiveWallpapers(needsImmediateRotation);
 
+    if (typeof chrome !== 'undefined' && chrome.storage?.local) {
+      chrome.storage.local.get([STORAGE_KEY], (res) => {
+        const stored = res?.[STORAGE_KEY] as PersistentState | undefined;
+        if (stored) {
+          if (!rawLocal) {
+            this.applyStateData(stored);
+            this.applyTheme();
+            this.saveState();
+          } else {
+            this.reconcileFromStorage(stored);
+          }
+        }
+      });
+
+      chrome.storage.onChanged.addListener((changes, areaName) => {
+        if (areaName === 'local' && changes[STORAGE_KEY]?.newValue) {
+          this.reconcileFromStorage(changes[STORAGE_KEY].newValue as PersistentState);
+        }
+      });
+    }
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('storage', (e) => {
+        if (e.key === STORAGE_KEY && e.newValue) {
+          try {
+            this.reconcileFromStorage(JSON.parse(e.newValue));
+          } catch {}
+        }
+      });
+
+      window.addEventListener('beforeunload', () => {
+        if (this.saveTimeout) {
+          clearTimeout(this.saveTimeout);
+          this.saveTimeout = null;
+        }
+        this.persistNow();
+      });
+
+      window.addEventListener('pagehide', () => {
+        if (this.saveTimeout) {
+          clearTimeout(this.saveTimeout);
+          this.saveTimeout = null;
+        }
+        this.persistNow();
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+          if (this.saveTimeout) {
+            clearTimeout(this.saveTimeout);
+            this.saveTimeout = null;
+          }
+          this.persistNow();
+        }
+      });
+    }
+
     $effect.root(() => {
       $effect(() => {
+        JSON.stringify($state.snapshot(this.settings));
+        JSON.stringify($state.snapshot(this.theme));
         const _ = [
           this.sort,
           this.time,
@@ -222,30 +289,178 @@ class Store {
           this.showFavoritesOnly,
           this.historyIndex,
           this.wallpaperQueue.length,
-          this.theme.primary,
-          this.theme.backgroundDim,
-          this.settings.showAttribution,
-          this.settings.showVersionBadge,
-          this.settings.showBottomMenuBtn,
-          this.settings.clockPosition,
-          this.settings.clock24h,
-          this.settings.showSeconds,
-          this.settings.showTime,
-          this.settings.showDate,
-          this.settings.fontHeading,
-          this.settings.fontBody,
-          this.settings.quickHudPosition,
-          this.settings.imageQuality,
-          this.settings.wallhavenApiKey,
-          this.settings.wallhavenCategories?.general,
-          this.settings.wallhavenCategories?.anime,
-          this.settings.wallhavenCategories?.people,
           this.currentWallpaper.id,
-          this.history.length,
+          this.history.map((h) => `${h.id}:${h.favorite}`).join(','),
         ];
         this.saveState();
       });
     });
+  }
+
+  applyStateData(data: PersistentState) {
+    if (data.theme) {
+      this.theme = { ...this.theme, ...data.theme };
+    }
+    if (data.settings) {
+      this.settings = {
+        ...this.settings,
+        ...data.settings,
+        enabledSources: Array.isArray(data.settings.enabledSources) && data.settings.enabledSources.length > 0
+          ? (data.settings.enabledSources as IndividualSource[])
+          : ['wallhaven', 'konachan', 'cozypixels', 'custom'],
+        enabledGitHubRepos: Array.isArray(data.settings.enabledGitHubRepos) && data.settings.enabledGitHubRepos.length > 0
+          ? data.settings.enabledGitHubRepos
+          : ['nordic', 'gruvbox', 'aesthetic', 'cozypixels'],
+        showBottomMenuBtn: typeof data.settings.showBottomMenuBtn === 'boolean'
+          ? data.settings.showBottomMenuBtn
+          : false,
+        showVersionBadge: typeof data.settings.showVersionBadge === 'boolean'
+          ? data.settings.showVersionBadge
+          : true,
+        imageQuality: data.settings.imageQuality === 'original' ? 'original' : 'balanced',
+        wallhavenApiKey: typeof data.settings.wallhavenApiKey === 'string' ? data.settings.wallhavenApiKey : '',
+        wallhavenCategories: data.settings.wallhavenCategories && typeof data.settings.wallhavenCategories === 'object'
+          ? {
+              general: !!data.settings.wallhavenCategories.general,
+              anime: data.settings.wallhavenCategories.anime !== false,
+              people: !!data.settings.wallhavenCategories.people,
+            }
+          : { general: false, anime: true, people: false },
+      };
+    }
+    if (data.sort) this.sort = data.sort;
+    if (data.time) this.time = data.time;
+    if (typeof data.nsfw === 'boolean') this.nsfw = data.nsfw;
+    if (typeof data.pinned === 'boolean') this.pinned = data.pinned;
+    if (typeof data.incognito === 'boolean') this.incognito = data.incognito;
+    if (typeof data.showFavoritesOnly === 'boolean') this.showFavoritesOnly = data.showFavoritesOnly;
+    if (Array.isArray(data.history)) {
+      this.history = pruneHistory(data.history.filter((x: WallpaperItem) => x.id !== 'wh-pomqg9' && !!x.url), 40);
+    }
+    if (typeof data.historyIndex === 'number' && this.history[data.historyIndex]) {
+      this.historyIndex = data.historyIndex;
+    }
+    if (
+      data.currentWallpaper?.id &&
+      data.currentWallpaper.id !== 'wh-pomqg9' &&
+      data.currentWallpaper.id !== BRAND_FALLBACK_WALLPAPER.id &&
+      data.currentWallpaper.url
+    ) {
+      this.currentWallpaper = data.currentWallpaper;
+    } else if (this.history[this.historyIndex]) {
+      this.currentWallpaper = this.history[this.historyIndex]!;
+    } else if (this.history[0]) {
+      this.currentWallpaper = this.history[0]!;
+    } else {
+      this.currentWallpaper = BRAND_FALLBACK_WALLPAPER;
+    }
+    if (Array.isArray(data.wallpaperQueue)) {
+      this.wallpaperQueue = data.wallpaperQueue.filter((x: WallpaperItem) => x.id !== 'wh-pomqg9' && !!x.url);
+    }
+    this.purgeDisabledSourceItems();
+  }
+
+  reconcileFromStorage(data: PersistentState) {
+    if (!data) return;
+    let themeChanged = false;
+
+    if (data.settings) {
+      const s = data.settings;
+      if (s.wallhavenApiKey !== undefined && s.wallhavenApiKey !== this.settings.wallhavenApiKey) {
+        this.settings.wallhavenApiKey = s.wallhavenApiKey;
+      }
+      if (s.wallhavenCategories && JSON.stringify(s.wallhavenCategories) !== JSON.stringify(this.settings.wallhavenCategories)) {
+        this.settings.wallhavenCategories = { ...s.wallhavenCategories };
+      }
+      if (s.imageQuality && s.imageQuality !== this.settings.imageQuality) {
+        this.settings.imageQuality = s.imageQuality;
+      }
+      if (s.clockPosition && s.clockPosition !== this.settings.clockPosition) {
+        this.settings.clockPosition = s.clockPosition;
+      }
+      if (typeof s.clock24h === 'boolean' && s.clock24h !== this.settings.clock24h) {
+        this.settings.clock24h = s.clock24h;
+      }
+      if (typeof s.soundEffects === 'boolean' && s.soundEffects !== this.settings.soundEffects) {
+        this.settings.soundEffects = s.soundEffects;
+      }
+      if (typeof s.rerollFlash === 'boolean' && s.rerollFlash !== this.settings.rerollFlash) {
+        this.settings.rerollFlash = s.rerollFlash;
+      }
+      if (typeof s.showSeconds === 'boolean' && s.showSeconds !== this.settings.showSeconds) {
+        this.settings.showSeconds = s.showSeconds;
+      }
+      if (typeof s.showTime === 'boolean' && s.showTime !== this.settings.showTime) {
+        this.settings.showTime = s.showTime;
+      }
+      if (typeof s.showDate === 'boolean' && s.showDate !== this.settings.showDate) {
+        this.settings.showDate = s.showDate;
+      }
+      if (typeof s.showWallpaperDetails === 'boolean' && s.showWallpaperDetails !== this.settings.showWallpaperDetails) {
+        this.settings.showWallpaperDetails = s.showWallpaperDetails;
+      }
+      if (typeof s.showAttribution === 'boolean' && s.showAttribution !== this.settings.showAttribution) {
+        this.settings.showAttribution = s.showAttribution;
+      }
+      if (typeof s.showBottomMenuBtn === 'boolean' && s.showBottomMenuBtn !== this.settings.showBottomMenuBtn) {
+        this.settings.showBottomMenuBtn = s.showBottomMenuBtn;
+      }
+      if (typeof s.showVersionBadge === 'boolean' && s.showVersionBadge !== this.settings.showVersionBadge) {
+        this.settings.showVersionBadge = s.showVersionBadge;
+      }
+      if (s.quickHudPosition && s.quickHudPosition !== this.settings.quickHudPosition) {
+        this.settings.quickHudPosition = s.quickHudPosition;
+      }
+      if (s.menuDockVisibility && s.menuDockVisibility !== this.settings.menuDockVisibility) {
+        this.settings.menuDockVisibility = s.menuDockVisibility;
+      }
+      if (s.fontHeading && s.fontHeading !== this.settings.fontHeading) {
+        this.settings.fontHeading = s.fontHeading;
+        themeChanged = true;
+      }
+      if (s.fontBody && s.fontBody !== this.settings.fontBody) {
+        this.settings.fontBody = s.fontBody;
+        themeChanged = true;
+      }
+      if (s.customFontHeadingName !== this.settings.customFontHeadingName) {
+        this.settings.customFontHeadingName = s.customFontHeadingName;
+        themeChanged = true;
+      }
+      if (Array.isArray(s.enabledSources) && JSON.stringify(s.enabledSources) !== JSON.stringify(this.settings.enabledSources)) {
+        this.settings.enabledSources = [...s.enabledSources];
+      }
+      if (Array.isArray(s.enabledGitHubRepos) && JSON.stringify(s.enabledGitHubRepos) !== JSON.stringify(this.settings.enabledGitHubRepos)) {
+        this.settings.enabledGitHubRepos = [...s.enabledGitHubRepos];
+      }
+    }
+
+    if (data.theme) {
+      if (data.theme.primary && data.theme.primary !== this.theme.primary) {
+        this.theme.primary = data.theme.primary;
+        themeChanged = true;
+      }
+      if (typeof data.theme.backgroundDim === 'number' && data.theme.backgroundDim !== this.theme.backgroundDim) {
+        this.theme.backgroundDim = data.theme.backgroundDim;
+        themeChanged = true;
+      }
+    }
+
+    if (Array.isArray(data.history)) {
+      const favs = data.history.filter((x) => x.favorite);
+      for (const fav of favs) {
+        const localItem = this.history.find((x) => x.id === fav.id);
+        if (localItem) {
+          localItem.favorite = true;
+        } else {
+          this.history.push(fav);
+        }
+      }
+      this.history = pruneHistory(this.history, 40);
+    }
+
+    if (themeChanged) {
+      this.applyTheme();
+    }
   }
 
   loadState() {
@@ -254,67 +469,7 @@ class Store {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return;
       const data: PersistentState = JSON.parse(raw);
-
-      if (data.theme) {
-        this.theme = { ...this.theme, ...data.theme };
-      }
-      if (data.settings) {
-        this.settings = {
-          ...this.settings,
-          ...data.settings,
-          enabledSources: Array.isArray(data.settings.enabledSources) && data.settings.enabledSources.length > 0
-            ? (data.settings.enabledSources as IndividualSource[])
-            : ['wallhaven', 'konachan', 'cozypixels', 'custom'],
-          enabledGitHubRepos: Array.isArray(data.settings.enabledGitHubRepos) && data.settings.enabledGitHubRepos.length > 0
-            ? data.settings.enabledGitHubRepos
-            : ['nordic', 'gruvbox', 'aesthetic', 'cozypixels'],
-          showBottomMenuBtn: typeof data.settings.showBottomMenuBtn === 'boolean'
-            ? data.settings.showBottomMenuBtn
-            : false,
-          showVersionBadge: typeof data.settings.showVersionBadge === 'boolean'
-            ? data.settings.showVersionBadge
-            : true,
-          imageQuality: data.settings.imageQuality === 'original' ? 'original' : 'balanced',
-          wallhavenApiKey: typeof data.settings.wallhavenApiKey === 'string' ? data.settings.wallhavenApiKey : '',
-          wallhavenCategories: data.settings.wallhavenCategories && typeof data.settings.wallhavenCategories === 'object'
-            ? {
-                general: !!data.settings.wallhavenCategories.general,
-                anime: data.settings.wallhavenCategories.anime !== false,
-                people: !!data.settings.wallhavenCategories.people,
-              }
-            : { general: false, anime: true, people: false },
-        };
-      }
-      if (data.sort) this.sort = data.sort;
-      if (data.time) this.time = data.time;
-      if (typeof data.nsfw === 'boolean') this.nsfw = data.nsfw;
-      if (typeof data.pinned === 'boolean') this.pinned = data.pinned;
-      if (typeof data.incognito === 'boolean') this.incognito = data.incognito;
-      if (typeof data.showFavoritesOnly === 'boolean') this.showFavoritesOnly = data.showFavoritesOnly;
-      if (Array.isArray(data.history)) {
-        this.history = data.history.filter((x: WallpaperItem) => x.id !== 'wh-pomqg9' && !!x.url);
-      }
-      if (typeof data.historyIndex === 'number' && this.history[data.historyIndex]) {
-        this.historyIndex = data.historyIndex;
-      }
-      if (
-        data.currentWallpaper?.id &&
-        data.currentWallpaper.id !== 'wh-pomqg9' &&
-        data.currentWallpaper.id !== BRAND_FALLBACK_WALLPAPER.id &&
-        data.currentWallpaper.url
-      ) {
-        this.currentWallpaper = data.currentWallpaper;
-      } else if (this.history[this.historyIndex]) {
-        this.currentWallpaper = this.history[this.historyIndex]!;
-      } else if (this.history[0]) {
-        this.currentWallpaper = this.history[0]!;
-      } else {
-        this.currentWallpaper = BRAND_FALLBACK_WALLPAPER;
-      }
-      if (Array.isArray(data.wallpaperQueue)) {
-        this.wallpaperQueue = data.wallpaperQueue.filter((x: WallpaperItem) => x.id !== 'wh-pomqg9' && !!x.url);
-      }
-      this.purgeDisabledSourceItems();
+      this.applyStateData(data);
     } catch (e) {
       console.warn(`Failed to load isekai state: ${e instanceof Error ? e.message : String(e)}`);
     }
@@ -333,9 +488,11 @@ class Store {
   persistNow() {
     if (!this.isHydrated || typeof localStorage === 'undefined') return;
     try {
+      const preservedHistory = pruneHistory($state.snapshot(this.history), 40);
+
       const data: PersistentState = {
         currentWallpaper: $state.snapshot(this.currentWallpaper),
-        history: $state.snapshot(this.history).slice(0, 30),
+        history: preservedHistory,
         historyIndex: this.historyIndex,
         wallpaperQueue: $state.snapshot(this.wallpaperQueue).slice(0, 20),
         sort: this.sort,
@@ -407,6 +564,25 @@ class Store {
     try {
       const stored = await getAllCustomWallpapers();
       this.customWallpapers = stored.map(convertStoredToWallpaperItem);
+
+      for (const cw of this.customWallpapers) {
+        if (this.currentWallpaper && this.currentWallpaper.id === cw.id) {
+          this.currentWallpaper.url = cw.url;
+          this.currentWallpaper.thumbnailUrl = cw.thumbnailUrl;
+        }
+        for (const h of this.history) {
+          if (h.id === cw.id) {
+            h.url = cw.url;
+            h.thumbnailUrl = cw.thumbnailUrl;
+          }
+        }
+        for (const q of this.wallpaperQueue) {
+          if (q.id === cw.id) {
+            q.url = cw.url;
+            q.thumbnailUrl = cw.thumbnailUrl;
+          }
+        }
+      }
     } catch (err) {
       console.warn(`Failed to load custom wallpapers: ${err instanceof Error ? err.message : String(err)}`);
     }
@@ -676,12 +852,20 @@ class Store {
   }
 
   setWallhavenApiKey(key: string) {
-    this.settings.wallhavenApiKey = key.trim();
-    this.saveState();
-    if (this.isSourceEnabled('wallhaven')) {
-      this.wallpaperQueue = [];
-      this.loadLiveWallpapers(true);
+    const trimmed = key.trim();
+    if (this.settings.wallhavenApiKey === trimmed) return;
+    this.settings.wallhavenApiKey = trimmed;
+    this.persistNow();
+
+    if (this.wallhavenDebounceTimer) {
+      clearTimeout(this.wallhavenDebounceTimer);
     }
+    this.wallhavenDebounceTimer = setTimeout(() => {
+      if (this.isSourceEnabled('wallhaven')) {
+        this.wallpaperQueue = [];
+        this.loadLiveWallpapers(true);
+      }
+    }, 600);
   }
 
   toggleWallhavenCategory(cat: 'general' | 'anime' | 'people') {
@@ -691,7 +875,7 @@ class Store {
       return;
     }
     this.settings.wallhavenCategories = updated;
-    this.saveState();
+    this.persistNow();
     if (this.isSourceEnabled('wallhaven')) {
       this.wallpaperQueue = [];
       this.loadLiveWallpapers(true);
@@ -758,7 +942,7 @@ class Store {
       const nextItem = this.wallpaperQueue.shift()!;
       this.currentWallpaper = nextItem;
       if (!this.history.some((x) => x.id === nextItem.id)) {
-        this.history = [nextItem, ...this.history].slice(0, 30);
+        this.history = pruneHistory([nextItem, ...this.history], 40);
         this.historyIndex = 0;
       } else {
         this.historyIndex = this.history.findIndex((x) => x.id === nextItem.id);
@@ -775,6 +959,7 @@ class Store {
   togglePin() {
     if (this.incognito) return;
     this.pinned = !this.pinned;
+    this.persistNow();
   }
 
   toggleNsfw() {
@@ -845,6 +1030,7 @@ class Store {
       if (this.currentWallpaper.id === id) {
         this.currentWallpaper.favorite = item.favorite;
       }
+      this.persistNow();
     }
   }
 
@@ -856,6 +1042,7 @@ class Store {
       this.historyIndex = idx;
       this.currentWallpaper = item;
       this.pinned = true;
+      this.persistNow();
     }
   }
 

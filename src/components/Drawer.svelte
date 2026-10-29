@@ -430,7 +430,6 @@
                 <div class="wallhaven-subconfig-block">
                   <div class="subrepo-header">
                     <span class="subrepo-title">Wallhaven Preferences</span>
-                    <span class="subrepo-desc">Categories & optional API key</span>
                   </div>
 
                   <div class="subconfig-row">
@@ -483,6 +482,7 @@
                         type="password"
                         placeholder="Paste your Wallhaven API key..."
                         value={store.settings.wallhavenApiKey || ''}
+                        oninput={(e) => store.setWallhavenApiKey((e.target as HTMLInputElement).value)}
                         onchange={(e) => store.setWallhavenApiKey((e.target as HTMLInputElement).value)}
                         class="glass-input api-key-field"
                       />
