@@ -1,6 +1,7 @@
 <script lang="ts">
   import { store } from '../lib/state.svelte';
   import RestartLinear from '@solar-icons/svelte/linear/restart';
+  import DefaultCanvas from './DefaultCanvas.svelte';
 
   let imgLoaded = $state(false);
 
@@ -17,14 +18,7 @@
 
 <div class="wallpaper-view" class:incognito-active={store.incognito || !store.currentWallpaper.url}>
 
-  <div class="incognito-canvas" class:active={store.incognito || !store.currentWallpaper.url}>
-    <div
-      class="incognito-center-brand"
-      class:center-clock={store.settings.clockPosition === 'center'}
-    >
-      <img src="/icon.svg" alt="Isekai Tab" class="incognito-logo" />
-    </div>
-  </div>
+  <DefaultCanvas active={store.isDefaultScreen || !imgLoaded} />
 
   {#if store.currentWallpaper.url}
     <img
@@ -39,14 +33,13 @@
         store.setLoading(false);
       }}
       onerror={() => {
+        imgLoaded = false;
         store.handleWallpaperError();
       }}
     />
   {/if}
 
-  <div class="dim-overlay" class:hidden={store.incognito || !store.currentWallpaper.url}></div>
-
-  <div class="ambient-aura-bg"></div>
+  <div class="dim-overlay" class:hidden={store.isDefaultScreen || !imgLoaded}></div>
 
   {#if store.showRollOverlay && !store.incognito}
     <div class="flash-burst">
@@ -64,60 +57,6 @@
     overflow: hidden;
     z-index: 0;
     background-color: #16171b;
-  }
-
-  /* Incognito Static Material Dark Canvas */
-  .incognito-canvas {
-    position: absolute;
-    inset: 0;
-    background-color: #16171b;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: opacity;
-  }
-
-  .incognito-canvas.active {
-    opacity: 1;
-  }
-
-  .incognito-center-brand {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0.92);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    transition: top 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .incognito-canvas.active .incognito-center-brand {
-    transform: translate(-50%, -50%) scale(1);
-  }
-
-  .incognito-center-brand.center-clock {
-    top: 58%;
-  }
-
-  .incognito-logo {
-    width: 120px;
-    height: 120px;
-    border: none;
-    background: transparent;
-    border-radius: 0;
-    box-shadow: none;
-    filter: none;
-    opacity: 0.85;
-    user-select: none;
-    pointer-events: none;
   }
 
   .wallpaper-media {
@@ -147,7 +86,7 @@
     position: absolute;
     inset: 0;
     background-color: #000000;
-    opacity: var(--wallpaper-dim, 0.4);
+    opacity: var(--wallpaper-dim, 0.35);
     transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     pointer-events: none;
     z-index: 3;

@@ -13,18 +13,25 @@
       store.isMenuVisible
     );
   });
+
+  const appVersion =
+    typeof chrome !== 'undefined' && chrome.runtime?.getManifest
+      ? chrome.runtime.getManifest().version
+      : typeof browser !== 'undefined' && (browser as unknown as { runtime?: typeof chrome.runtime }).runtime?.getManifest
+        ? (browser as unknown as { runtime: typeof chrome.runtime }).runtime.getManifest().version
+        : '0.1.1';
 </script>
 
 <footer class="footer-bar" aria-label="Footer and navigation">
 
-  <div class="attr-side" class:collapsed={store.incognito || !store.settings.showAttribution}>
+  <div class="attr-side" class:collapsed={store.incognito || (!store.settings.showAttribution && !store.isLoading)}>
     {#if !store.incognito}
 
       <div class="loader-wrap" class:visible={store.isLoading}>
-        <Loader size={20} color="rgba(255, 255, 255, 0.85)" />
+        <Loader size={20} color="var(--accent, #ffffff)" />
       </div>
 
-      <div class="attr-text" class:visible={!store.isLoading && store.settings.showAttribution && !!store.currentWallpaper.url}>
+      <div class="attr-text" class:visible={!store.isDefaultScreen && store.settings.showAttribution}>
         <p class="attr-title">
           Image from
           <a
@@ -76,7 +83,7 @@
         rel="noopener noreferrer"
         class="version-link"
       >
-        v0.1.0
+        v{appVersion}
       </a>
     </p>
   </div>

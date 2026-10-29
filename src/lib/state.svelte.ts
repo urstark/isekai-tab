@@ -382,6 +382,10 @@ class Store {
     this.isLoading = val;
   }
 
+  get isDefaultScreen(): boolean {
+    return this.incognito || this.isLoading || !this.currentWallpaper.url;
+  }
+
   async loadCustomWallpapers() {
     try {
       const stored = await getAllCustomWallpapers();
@@ -550,18 +554,20 @@ class Store {
       console.warn('Failed to load wallpapers', e);
     } finally {
       this.isFetching = false;
-      this.isLoading = false;
+      if (!this.currentWallpaper.url) {
+        this.isLoading = false;
+      }
     }
   }
 
   handleWallpaperError() {
-    this.setLoading(false);
     console.warn('Skipping broken wallpaper:', this.currentWallpaper.url);
     if (this.wallpaperQueue.length > 0) {
       const nextItem = this.wallpaperQueue.shift()!;
       this.currentWallpaper = nextItem;
       this.saveState();
     } else {
+      this.currentWallpaper = BRAND_FALLBACK_WALLPAPER;
       this.loadLiveWallpapers(true);
     }
   }
@@ -706,7 +712,6 @@ class Store {
 
     setTimeout(() => {
       this.isRolling = false;
-      this.isLoading = false;
     }, 600);
   }
 

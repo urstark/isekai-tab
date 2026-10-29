@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { size = 20, color = 'rgba(255, 255, 255, 0.85)' } = $props();
+  let { size = 20, color = 'var(--accent, #ffffff)' } = $props();
 </script>
 
 <div class="puff-loader" style="--loader-size: {size}px; --loader-color: {color};" aria-label="Loading">
@@ -26,6 +26,7 @@
     height: var(--loader-size, 20px);
     border-radius: 50%;
     border: 2px solid var(--loader-color, #ffffff);
+    box-shadow: 0 0 10px rgba(var(--accent-rgb, 255, 255, 255), 0.45);
     opacity: 0;
     box-sizing: border-box;
     animation: puffRipple 2s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;

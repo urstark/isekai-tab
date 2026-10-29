@@ -83,8 +83,8 @@
 
   <Wallpaper />
 
-  <div class="ambient-vignette-top" class:hidden={store.incognito || !store.currentWallpaper.url}></div>
-  <div class="ambient-vignette-bottom" class:hidden={store.incognito || !store.currentWallpaper.url}></div>
+  <div class="ambient-vignette-top" class:hidden={store.isDefaultScreen}></div>
+  <div class="ambient-vignette-bottom" class:hidden={store.isDefaultScreen}></div>
 
   <div class="app-frame">
 

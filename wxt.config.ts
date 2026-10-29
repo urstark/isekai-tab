@@ -3,6 +3,9 @@ import { defineConfig } from 'wxt';
 export default defineConfig({
   srcDir: 'src',
   modules: ['@wxt-dev/module-svelte'],
+  suppressWarnings: {
+    firefoxDataCollection: true,
+  },
   manifest: {
     name: 'Isekai Tab',
     description: 'Anime wallpaper new tab page',
@@ -22,7 +25,7 @@ export default defineConfig({
     ],
     browser_specific_settings: {
       gecko: {
-        id: 'isekai-tab@urstark.dev',
+        id: 'isekai-tab@urstark.is-a.dev',
         strict_min_version: '109.0',
       },
     },

@@ -4,10 +4,9 @@
   let now = $state(new Date());
 
   $effect(() => {
-    const intervalMs = store.settings.showSeconds ? 1000 : 10000;
     const timer = setInterval(() => {
       now = new Date();
-    }, intervalMs);
+    }, 1000);
     return () => clearInterval(timer);
   });
 
@@ -40,7 +39,7 @@
 
   <div
     class="details-text"
-    class:collapsed={store.incognito || store.isLoading || !store.settings.showWallpaperDetails}
+    class:collapsed={store.isDefaultScreen || !store.settings.showWallpaperDetails}
   >
     <p class="title-line" title={store.currentWallpaper.title}>
       {#if store.currentWallpaper.sourceUrl}
