@@ -469,7 +469,7 @@
                     <div class="api-key-header">
                       <span class="subconfig-label">API Key (Optional)</span>
                       <a
-                        href="https://wallhaven.cc/settings/api"
+                        href="https://wallhaven.cc/settings/account"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="api-link"
