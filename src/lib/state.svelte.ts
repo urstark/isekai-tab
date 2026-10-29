@@ -212,11 +212,13 @@ class Store {
     });
     this.loadCustomWallpapers();
 
-    const needsImmediateRotation =
-      !didRotateOnStart ||
-      !this.currentWallpaper.url ||
-      this.currentWallpaper.id === BRAND_FALLBACK_WALLPAPER.id ||
-      !this.isItemSourceEnabled(this.currentWallpaper);
+    const hasValidWallpaper =
+      Boolean(this.currentWallpaper?.url) &&
+      this.currentWallpaper.id !== BRAND_FALLBACK_WALLPAPER.id;
+
+    const needsImmediateRotation = !this.pinned
+      ? (!didRotateOnStart || !hasValidWallpaper || !this.isItemSourceEnabled(this.currentWallpaper))
+      : !hasValidWallpaper;
     this.loadLiveWallpapers(needsImmediateRotation);
 
     if (typeof chrome !== 'undefined' && chrome.storage?.local) {
@@ -253,24 +255,22 @@ class Store {
         if (this.saveTimeout) {
           clearTimeout(this.saveTimeout);
           this.saveTimeout = null;
+          this.persistNow();
         }
-        this.persistNow();
       });
 
       window.addEventListener('pagehide', () => {
         if (this.saveTimeout) {
           clearTimeout(this.saveTimeout);
           this.saveTimeout = null;
+          this.persistNow();
         }
-        this.persistNow();
       });
 
       document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'hidden') {
-          if (this.saveTimeout) {
-            clearTimeout(this.saveTimeout);
-            this.saveTimeout = null;
-          }
+        if (document.visibilityState === 'hidden' && this.saveTimeout) {
+          clearTimeout(this.saveTimeout);
+          this.saveTimeout = null;
           this.persistNow();
         }
       });
@@ -445,14 +445,35 @@ class Store {
       }
     }
 
+    if (typeof data.pinned === 'boolean' && !this.incognito) {
+      if (data.pinned) {
+        this.pinned = true;
+        const cw = data.currentWallpaper;
+        if (
+          cw?.id &&
+          cw.id !== BRAND_FALLBACK_WALLPAPER.id &&
+          cw.url &&
+          cw.id !== this.currentWallpaper.id
+        ) {
+          this.currentWallpaper = cw;
+          this.historyIndex = this.history.findIndex((x) => x.id === cw.id);
+          if (this.historyIndex === -1) this.historyIndex = 0;
+        }
+      } else if (this.pinned && !data.pinned) {
+        this.pinned = false;
+      }
+    }
+
     if (Array.isArray(data.history)) {
-      const favs = data.history.filter((x) => x.favorite);
-      for (const fav of favs) {
-        const localItem = this.history.find((x) => x.id === fav.id);
-        if (localItem) {
-          localItem.favorite = true;
-        } else {
-          this.history.push(fav);
+      const remoteFavMap = new Map(data.history.map((x) => [x.id, Boolean(x.favorite)]));
+      for (const item of this.history) {
+        if (remoteFavMap.has(item.id)) {
+          item.favorite = remoteFavMap.get(item.id)!;
+        }
+      }
+      for (const item of data.history) {
+        if (item.favorite && !this.history.some((x) => x.id === item.id)) {
+          this.history.push(item);
         }
       }
       this.history = pruneHistory(this.history, 40);
@@ -686,13 +707,16 @@ class Store {
     if (this.isFetching && !force) return;
     this.isFetching = true;
 
-    const needsInitialWallpaper =
-      !this.currentWallpaper ||
-      !this.currentWallpaper.url ||
-      this.currentWallpaper.id === BRAND_FALLBACK_WALLPAPER.id ||
-      !this.isItemSourceEnabled(this.currentWallpaper);
+    const hasValidWallpaper =
+      Boolean(this.currentWallpaper?.url) &&
+      this.currentWallpaper.id !== BRAND_FALLBACK_WALLPAPER.id &&
+      (this.pinned || this.isItemSourceEnabled(this.currentWallpaper));
 
-    if (force || needsInitialWallpaper) {
+    const shouldRotate = !this.pinned
+      ? (force || !hasValidWallpaper)
+      : !hasValidWallpaper;
+
+    if (shouldRotate) {
       this.isLoading = true;
     }
 
@@ -715,7 +739,7 @@ class Store {
       }
 
       if (validItems.length > 0) {
-        if (force || needsInitialWallpaper) {
+        if (shouldRotate) {
           this.pinned = false;
           const candidates = validItems.filter((x) => x.id !== this.currentWallpaper.id && !!x.url);
           const fresh = candidates[Math.floor(Math.random() * candidates.length)] || validItems[0]!;
@@ -1035,13 +1059,20 @@ class Store {
   }
 
   selectFromHistory(id: string) {
-    const idx = this.history.findIndex((x) => x.id === id);
-    const item = this.history[idx];
-    if (idx !== -1 && item) {
+    let item = this.history.find((x) => x.id === id);
+    if (!item) {
+      item = this.customWallpapers.find((x) => x.id === id);
+    }
+    if (item) {
       this.isLoading = true;
-      this.historyIndex = idx;
       this.currentWallpaper = item;
       this.pinned = true;
+      if (!this.history.some((x) => x.id === item.id)) {
+        this.history = pruneHistory([item, ...this.history], 40);
+        this.historyIndex = 0;
+      } else {
+        this.historyIndex = this.history.findIndex((x) => x.id === item.id);
+      }
       this.persistNow();
     }
   }

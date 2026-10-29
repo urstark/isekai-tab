@@ -277,12 +277,22 @@
                           class="card-action-btn btn-spring"
                           class:active={isPinned}
                           onclick={() => {
-                            store.selectFromHistory(item.id);
-                            store.pinned = true;
+                            if (isPinned) {
+                              store.pinned = false;
+                              store.persistNow();
+                            } else {
+                              store.selectFromHistory(item.id);
+                              store.pinned = true;
+                              store.persistNow();
+                            }
                           }}
-                          aria-label="Pin wallpaper"
+                          aria-label={isPinned ? 'Unpin wallpaper' : 'Pin wallpaper'}
                         >
-                          <PinLinear size={14} />
+                          {#if isPinned}
+                            <PinBold size={14} />
+                          {:else}
+                            <PinLinear size={14} />
+                          {/if}
                         </button>
 
                         <button
