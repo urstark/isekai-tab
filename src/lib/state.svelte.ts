@@ -783,7 +783,7 @@ class Store {
   }
 
   handleWallpaperError() {
-    console.warn('Skipping broken wallpaper:', this.currentWallpaper.url);
+    console.debug('Skipping broken wallpaper:', this.currentWallpaper.url);
     if (this.wallpaperQueue.length > 0) {
       const nextItem = this.wallpaperQueue.shift()!;
       this.currentWallpaper = nextItem;

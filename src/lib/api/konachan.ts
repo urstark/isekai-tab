@@ -119,7 +119,7 @@ async function fetchFromMoebooru(
         };
       });
   } catch (err) {
-    console.warn(`Error fetching ${siteName}: ${err instanceof Error ? err.message : String(err)}`);
+    console.debug(`Error fetching ${siteName}: ${err instanceof Error ? err.message : String(err)}`);
     return [];
   }
 }
