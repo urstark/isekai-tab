@@ -2,7 +2,7 @@
 
   <img src="public/icon/128.png" width="96" height="96" alt="Isekai Tab Logo" style="border-radius: 20%;">
 
-  <h1>⛩️ Isekai Tab</h1>
+  <h1>Isekai Tab</h1>
 
   <p align="center">
     <strong>A sleek, keyboard-first anime & Linux ricing new tab extension for modern browsers.</strong>
@@ -19,6 +19,11 @@
   </p>
 
   <div align="center">
+    <a href="https://addons.mozilla.org/firefox/addon/isekai-tab/" target="_blank">
+      <img src="https://img.shields.io/amo/v/isekai-tab?style=for-the-badge&color=e58e26&labelColor=16171b&logo=firefox-browser&logoColor=white&label=Mozilla%20Add-ons" alt="Mozilla Add-ons" />
+    </a>
+    <img src="https://img.shields.io/badge/Chrome_Web_Store-Coming_Soon-e58e26?style=for-the-badge&logo=googlechrome&logoColor=white&labelColor=16171b" alt="Chrome Web Store Soon" />
+    <br />
     <img src="https://img.shields.io/github/v/release/urstark/isekai-tab?style=for-the-badge&color=e58e26&labelColor=16171b&logo=github" alt="Latest Version" />
     <img src="https://img.shields.io/github/stars/urstark/isekai-tab?style=for-the-badge&color=e58e26&labelColor=16171b&logo=github" alt="Stars" />
     <img src="https://img.shields.io/github/license/urstark/isekai-tab?style=for-the-badge&color=e58e26&labelColor=16171b" alt="License" />
@@ -28,13 +33,13 @@
 
   <img src=".github/assets/home.png" alt="Isekai Tab Hero Overview" width="85%" />
   <br />
-  <sub><em>Default Desktop Canvas with Waybar HUD and Solstice glassmorphism</em></sub>
+  <sub><em>Default Desktop Canvas with Waybar HUD and glassmorphism</em></sub>
 
 </div>
 
 <hr />
 
-## 📸 Showcase
+## Showcase
 
 <div align="center" id="showcase">
 
@@ -73,7 +78,7 @@
   * **Hybrid Mode**: Seamlessly shuffle across all feeds together with background replenishment.
   * **Stream Resolution Control**: Choose between **Balanced (1080p HD)** for instant ~100ms loading and ~95% bandwidth savings, or **Original (4K Ultra)** for uncompressed master artwork.
 
-* **Waybar Quick HUD & Solstice Dock**
+* **Waybar Quick HUD & Dock**
   * Floating edge-snapping Waybar quick rail with hover flyouts for fast source toggling.
   * Proximity-aware bottom dock with fluid blur transitions.
   * Fully customizable clock placement (Left / Center) and toggleable bottom attribution.
@@ -95,19 +100,70 @@
 
 ---
 
-## 🎐 Installation
+## Installation
 
-### Load in Chrome, Brave, Edge, or Chromium
+<div align="center" id="installation">
 
-1. Download `isekai-tab-chrome.zip` from the latest [Release](https://github.com/urstark/isekai-tab/releases).
+<table>
+  <thead>
+    <tr>
+      <th align="center" width="50%">🦊 Firefox & Gecko</th>
+      <th align="center" width="50%">🌐 Chrome & Chromium</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="center">
+        <a href="https://addons.mozilla.org/firefox/addon/isekai-tab/" target="_blank">
+          <img src="https://raw.githubusercontent.com/ZER0-X/badges/main/mozilla/firefox-addons/get-the-add-on.svg" height="50" alt="Get the Add-on on Firefox" />
+        </a>
+        <br />
+        <sub>Compatible with <b>Firefox</b>, <b>Floorp</b>, <b>Zen Browser</b>, <b>LibreWolf</b>, and <b>Waterfox</b></sub>
+      </td>
+      <td align="center">
+        <img src="https://raw.githubusercontent.com/GoogleChrome/webstore-docs/master/images/ChromeWebStore_BadgeWBorder_v2_206x58.png" height="50" alt="Available in the Chrome Web Store" />
+        <br />
+        <sub><em>(Coming Soon)</em></sub>
+        <br />
+        <sub>Compatible with <b>Chrome</b>, <b>Helium</b>, <b>Brave</b>, <b>Edge</b>, <b>Opera</b>, <b>Vivaldi</b>, and <b>Arc</b></sub>
+      </td>
+    </tr>
+    <tr>
+      <th align="center" colspan="2">📦 GitHub Releases (Manual / Offline Package)</th>
+    </tr>
+    <tr>
+      <td align="center" colspan="2">
+        <a href="https://github.com/urstark/isekai-tab/releases/latest" target="_blank">
+          <img src="https://raw.githubusercontent.com/rukamori/ArchiveTune/refs/heads/main/assets/badge_github.png" height="50" alt="Download from GitHub Releases" />
+        </a>
+      <br />
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+</div>
+
+<br />
+
+<details>
+<summary><b>Manual Installation for Chromium Browsers (Click to expand)</b></summary>
+
+<br />
+
+1. Download `isekai-tab-chrome.zip` from the latest [GitHub Release](https://github.com/urstark/isekai-tab/releases/latest).
 2. Unzip the downloaded file into a folder of your choice.
-3. Open your browser and navigate to the Extensions page:
-   * Chrome: `chrome://extensions`
-   * Brave: `brave://extensions`
-   * Edge: `edge://extensions`
+3. Open your browser's extension management page:
+   * **Chrome**: `chrome://extensions`
+   * **Helium**: `helium://extensions/`
+   * **Brave**: `brave://extensions`
+   * **Edge**: `edge://extensions`
+   * **Opera / Arc / Vivaldi**: Open extension settings
 4. Toggle on **Developer mode** in the top right corner.
 5. Click **Load unpacked** and select the unzipped directory.
 6. Open a new tab and enjoy 🌸
+
+</details>
 
 ### Build from Source
 
