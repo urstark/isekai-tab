@@ -509,7 +509,7 @@
                     </div>
                     {#if store.settings.wallhavenApiKey}
                       <p class="api-key-hint active-hint">
-                        ✓ API Key Active — Full NSFW unlocked & immune to anonymous rate limits (45 req/min).
+                        ✓ API Key Active: Full NSFW unlocked & immune to anonymous rate limits (45 req/min).
                       </p>
                     {:else}
                       <p class="api-key-hint">

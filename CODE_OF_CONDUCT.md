@@ -15,7 +15,7 @@ This is an open source passion project built by a solo developer for people who 
    Hate speech, personal attacks, harassment, or elitist gatekeeping will not be tolerated. Keep discussions polite and focused on building great software.
 
 3. **Constructive and thoughtful feedback**
-   If you disagree with an architectural decision, UI choice, or an idea, critique the implementation—never the person. Offer practical solutions and alternatives.
+   If you disagree with an architectural decision, UI choice, or an idea, critique the implementation, never the person. Offer practical solutions and alternatives.
 
 4. **Help each other out**
    Found a bug? Have an idea? Open an issue or join the discussion. If you see someone needing help with setup, feel free to pitch in!

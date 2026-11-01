@@ -9,7 +9,7 @@
   </p>
 
   <p align="center">
-    Discover stunning wallpapers, fine-tune your workspace, and make every new tab feel like yours — with keyboard-first controls and privacy at its core.
+    Discover stunning wallpapers, fine-tune your workspace, and make every new tab feel like yours, with keyboard-first controls and privacy at its core.
   </p>
 
   <p align="center">
@@ -46,19 +46,19 @@
       <td align="center" width="50%">
         <img src=".github/assets/search.png" width="100%" alt="Keyboard command palette" />
         <br />
-        <sub><b>Command Palette</b> — Navigate without leaving the keyboard</sub>
+        <sub><b>Command Palette:</b> Navigate without leaving the keyboard</sub>
       </td>
       <td align="center" width="50%">
         <img src=".github/assets/menu.png" width="100%" alt="Customization and wallpaper feed settings" />
         <br />
-        <sub><b>Customization</b> — Make every detail yours</sub>
+        <sub><b>Customization:</b> Make every detail yours</sub>
       </td>
     </tr>
     <tr>
       <td align="center" colspan="2">
         <img src=".github/assets/incognito.png" width="85%" alt="Minimal dark canvas" />
         <br />
-        <sub><b>Minimal Canvas</b> — A quieter view in one keystroke</sub>
+        <sub><b>Minimal Canvas:</b> A quieter view in one keystroke</sub>
       </td>
     </tr>
   </table>
