@@ -1,16 +1,27 @@
 <script lang="ts">
-  import { store } from '../lib/state.svelte';
+  import { store } from "../lib/state.svelte";
 
   let { active }: { active?: boolean } = $props();
-  const isActive = $derived(active !== undefined ? active : store.isDefaultScreen);
+  const isActive = $derived(
+    active !== undefined ? active : store.isDefaultScreen,
+  );
 </script>
 
 <div class="default-canvas" class:active={isActive}>
   <div
     class="center-brand"
-    class:center-clock={store.settings.clockPosition === 'center'}
+    class:center-clock={store.settings.clockPosition === "center"}
   >
-    <img src="/icon.svg" alt="Isekai Tab" class="brand-logo" />
+    <img
+      src="/icon/crest.png"
+      srcset="/icon/crest-256.png 256w, /icon/crest.png 512w"
+      sizes="160px"
+      alt="Isekai Tab"
+      class="brand-logo"
+      width="160"
+      height="160"
+      decoding="async"
+    />
   </div>
 </div>
 
@@ -43,8 +54,9 @@
     align-items: center;
     justify-content: center;
     pointer-events: none;
-    transition: top 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    transition:
+      top 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .default-canvas.active .center-brand {
@@ -56,8 +68,9 @@
   }
 
   .brand-logo {
-    width: 120px;
-    height: 120px;
+    width: clamp(120px, 13vw, 160px);
+    height: clamp(120px, 13vw, 160px);
+    object-fit: contain;
     border: none;
     background: transparent;
     border-radius: 0;
@@ -68,4 +81,3 @@
     pointer-events: none;
   }
 </style>
-

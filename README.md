@@ -1,221 +1,259 @@
 <div align="center">
+  <img src="public/icon/128.png" width="96" height="96" alt="Isekai Tab icon" />
 
-  <img src="public/icon/128.png" width="96" height="96" alt="Isekai Tab Logo" style="border-radius: 20%;">
-
-  <h1>Isekai Tab</h1>
+  # Isekai Tab
 
   <p align="center">
-    <strong>A sleek, keyboard-first anime & Linux ricing new tab extension for modern browsers.</strong>
-    <br />
-    <em>Every new tab transports you into an anime world with glassmorphic Waybar HUD and dark aesthetics.</em>
+    <b>Your new tab. Your own world.</b><br />
+    <em>A beautiful, deeply customizable new-tab experience inspired by anime aesthetics and Linux desktop ricing.</em>
   </p>
 
   <p align="center">
-    <a href="#-showcase"><b>Showcase</b></a> •
-    <a href="#-highlights"><b>Features</b></a> •
-    <a href="#-installation"><b>Installation</b></a> •
-    <a href="#keyboard-shortcuts"><b>Shortcuts</b></a> •
-    <a href="https://github.com/urstark/isekai-tab/releases"><b>Releases</b></a>
+    Discover stunning wallpapers, fine-tune your workspace, and make every new tab feel like yours — with keyboard-first controls and privacy at its core.
   </p>
 
-  <div align="center">
-    <a href="https://addons.mozilla.org/firefox/addon/isekai-tab/" target="_blank">
-      <img src="https://img.shields.io/amo/v/isekai-tab?style=for-the-badge&color=e58e26&labelColor=16171b&logo=firefox-browser&logoColor=white&label=Mozilla%20Add-ons" alt="Mozilla Add-ons" />
-    </a>
-    <img src="https://img.shields.io/badge/Chrome_Web_Store-Coming_Soon-e58e26?style=for-the-badge&logo=googlechrome&logoColor=white&labelColor=16171b" alt="Chrome Web Store Soon" />
-    <br />
-    <img src="https://img.shields.io/github/v/release/urstark/isekai-tab?style=for-the-badge&color=e58e26&labelColor=16171b&logo=github" alt="Latest Version" />
-    <img src="https://img.shields.io/github/stars/urstark/isekai-tab?style=for-the-badge&color=e58e26&labelColor=16171b&logo=github" alt="Stars" />
-    <img src="https://img.shields.io/github/license/urstark/isekai-tab?style=for-the-badge&color=e58e26&labelColor=16171b" alt="License" />
-  </div>
+  <p align="center">
+    <a href="#showcase"><b>Showcase</b></a> ·
+    <a href="#features"><b>Features</b></a> ·
+    <a href="#installation"><b>Installation</b></a> ·
+    <a href="#keyboard-shortcuts"><b>Shortcuts</b></a> ·
+    <a href="#development"><b>Development</b></a>
+  </p>
+
+  <p align="center">
+    <a href="https://addons.mozilla.org/firefox/addon/isekai-tab/"><img src="https://img.shields.io/amo/v/isekai-tab?style=for-the-badge&color=e58e26&labelColor=16171b&logo=firefox-browser&logoColor=white&label=Firefox%20Add-ons" alt="Firefox Add-ons" /></a>
+    <a href="https://github.com/urstark/isekai-tab/releases"><img src="https://img.shields.io/github/v/release/urstark/isekai-tab?style=for-the-badge&color=e58e26&labelColor=16171b&logo=github" alt="Latest release" /></a>
+    <a href="https://github.com/urstark/isekai-tab/stargazers"><img src="https://img.shields.io/github/stars/urstark/isekai-tab?style=for-the-badge&color=e58e26&labelColor=16171b" alt="GitHub stars" /></a>
+    <a href="LICENSE"><img src="https://img.shields.io/github/license/urstark/isekai-tab?style=for-the-badge&color=e58e26&labelColor=16171b" alt="License" /></a>
+  </p>
 
   <br />
 
-  <img src=".github/assets/home.png" alt="Isekai Tab Hero Overview" width="85%" />
+  <img src=".github/assets/home.png" width="90%" alt="Isekai Tab new-tab workspace" />
   <br />
-  <sub><em>Default Desktop Canvas with Waybar HUD and glassmorphism</em></sub>
-
+  <sub><em>An anime-inspired workspace, shaped by you.</em></sub>
 </div>
 
-<hr />
+<br />
+
+---
 
 ## Showcase
 
 <div align="center" id="showcase">
-
-<table>
-  <tr>
-    <td align="center" width="50%">
-      <img src=".github/assets/search.png" alt="Command Palette" width="100%" />
-      <br />
-      <sub><b>Command Palette (<kbd>Ctrl+K</kbd> / <kbd>Space</kbd>)</b></sub>
-    </td>
-    <td align="center" width="50%">
-      <img src=".github/assets/menu.png" alt="Settings & Feeds" width="100%" />
-      <br />
-      <sub><b>Settings Drawer & Feeds Management</b></sub>
-    </td>
-  </tr>
-  <tr>
-    <td align="center" colspan="2">
-      <img src=".github/assets/incognito.png" alt="Minimalist Incognito Mode" width="85%" />
-      <br />
-      <sub><b>Minimalist Incognito Privacy Canvas (<kbd>I</kbd>)</b></sub>
-    </td>
-  </tr>
-</table>
-
-</div>
-
----
-
-## 🌸 Highlights
-
-* **Multi-Feed Wallpaper Engine**
-  * **Wallhaven (Anime)**: Curated high-res desktop art, landscape moescape, and anime wallpapers.
-  * **Konachan & Yande.re**: High-resolution Moebooru waifu & anime artwork with optional NSFW controls.
-  * **GitHub Ricing Repositories**: Sub-selectable ricing collections including **Nordic Linux** (`linuxdotexe/nordic-wallpapers`), **Gruvbox Ricing** (`AngelJumbo/gruvbox-wallpapers`), **Aesthetic Anime** (`D3Ext/aesthetic-wallpapers`), and **CozyPixels** (`SleepyCatHey/CozyPixels`).
-  * **Hybrid Mode**: Seamlessly shuffle across all feeds together with background replenishment.
-  * **Stream Resolution Control**: Choose between **Balanced (1080p HD)** for instant ~100ms loading and ~95% bandwidth savings, or **Original (4K Ultra)** for uncompressed master artwork.
-
-* **Waybar Quick HUD & Dock**
-  * Floating edge-snapping Waybar quick rail with hover flyouts for fast source toggling.
-  * Proximity-aware bottom dock with fluid blur transitions.
-  * Fully customizable clock placement (Left / Center) and toggleable bottom attribution.
-
-* **Keyboard-First Command Palette (`Ctrl+K` or `Space`)**
-  * Instant Rofi / Wofi / Spotlight style modal.
-  * Fast fuzzy search for wallpaper feeds, GitHub sub-collections, filters, and typeface presets without lifting your hands from the keyboard.
-
-* **Linux Ricing Typography**
-  * Choose between curated developer typefaces: **JetBrains Mono**, **Fira Code**, **Space Grotesk**, **Outfit**, **Plus Jakarta Sans**, **Poppins**, and **Montserrat**.
-  * Custom font uploader: drop any local `.ttf`, `.woff`, or `.woff2` font file to style your clock and interface.
-
-* **Offline Personal Wallpaper Hub**
-  * Drag and drop local images, folder hierarchies, or direct image URLs.
-  * Fast in-browser thumbnail generation and offline storage powered by IndexedDB.
-
-* **Incognito Privacy Mode (`I`)**
-  * Instantly dims the wallpaper into a clean, distraction-free static dark canvas with the centered Isekai Tab crest.
-
----
-
-## Installation
-
-<div align="center" id="installation">
-
-<table>
-  <thead>
+  <table>
     <tr>
-      <th align="center" width="50%">🦊 Firefox & Gecko</th>
-      <th align="center" width="50%">🌐 Chrome & Chromium</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td align="center">
-        <a href="https://addons.mozilla.org/firefox/addon/isekai-tab/" target="_blank">
-          <img src="https://raw.githubusercontent.com/ZER0-X/badges/main/mozilla/firefox-addons/get-the-add-on.svg" height="50" alt="Get the Add-on on Firefox" />
-        </a>
+      <td align="center" width="50%">
+        <img src=".github/assets/search.png" width="100%" alt="Keyboard command palette" />
         <br />
-        <sub>Compatible with <b>Firefox</b>, <b>Floorp</b>, <b>Zen Browser</b>, <b>LibreWolf</b>, and <b>Waterfox</b></sub>
+        <sub><b>Command Palette</b> — Navigate without leaving the keyboard</sub>
       </td>
-      <td align="center">
-        <img src="https://raw.githubusercontent.com/GoogleChrome/webstore-docs/master/images/ChromeWebStore_BadgeWBorder_v2_206x58.png" height="50" alt="Available in the Chrome Web Store" />
+      <td align="center" width="50%">
+        <img src=".github/assets/menu.png" width="100%" alt="Customization and wallpaper feed settings" />
         <br />
-        <sub><em>(Coming Soon)</em></sub>
-        <br />
-        <sub>Compatible with <b>Chrome</b>, <b>Helium</b>, <b>Brave</b>, <b>Edge</b>, <b>Opera</b>, <b>Vivaldi</b>, and <b>Arc</b></sub>
+        <sub><b>Customization</b> — Make every detail yours</sub>
       </td>
-    </tr>
-    <tr>
-      <th align="center" colspan="2">📦 GitHub Releases (Manual / Offline Package)</th>
     </tr>
     <tr>
       <td align="center" colspan="2">
-        <a href="https://github.com/urstark/isekai-tab/releases/latest" target="_blank">
-          <img src="https://raw.githubusercontent.com/rukamori/ArchiveTune/refs/heads/main/assets/badge_github.png" height="50" alt="Download from GitHub Releases" />
-        </a>
-      <br />
+        <img src=".github/assets/incognito.png" width="85%" alt="Minimal dark canvas" />
+        <br />
+        <sub><b>Minimal Canvas</b> — A quieter view in one keystroke</sub>
       </td>
     </tr>
-  </tbody>
-</table>
-
+  </table>
 </div>
 
-<br />
+---
+
+## Features
+
+<div id="features"></div>
+
+### Wallpapers worth opening a new tab for
+
+Discover artwork from **Wallhaven**, **Konachan**, **Yande.re**, and curated **GitHub** wallpaper collections. Browse anime, atmospheric landscapes, and desktop ricing aesthetics, or blend sources together with **Hybrid Mode**.
+
+* **Curated collections:** Explore themes such as Nordic Linux, Gruvbox, Aesthetic Anime, and CozyPixels.
+* **Personal feeds:** Select the sources and sub-collections that match your taste, with optional Wallhaven API-key controls.
+* **Resolution choices:** Use Balanced (1080p HD) for reduced data usage and instant loading, or Original for higher-resolution artwork when available.
+* **Wallpaper controls:** Refresh on demand, pin your favorite image, and adjust mature-content filtering.
+
+### A workspace that feels like yours
+
+Personalize more than just the wallpaper. Isekai Tab gives you granular control over the appearance and placement of your interface.
+
+* **Color & atmosphere:** Choose curated accent palettes or enter your own custom hex color; adjust wallpaper dimming to keep text readable.
+* **Typography:** Choose from built-in fonts such as JetBrains Mono, Fira Code, Space Grotesk, Outfit, Plus Jakarta Sans, Poppins, and Montserrat - or import your own `.ttf`, `.woff`, or `.woff2` files.
+* **Clock & HUD:** Position the clock (left or center), switch between 12- and 24-hour time, and choose whether to display the date and seconds.
+* **Waybar-inspired rail:** Place the quick-control rail on the right, at the top, or hide it entirely.
+* **Bottom dock:** Choose between an always-visible dock and a proximity-aware hover experience.
+
+### Keyboard-first by design
+
+Open the command palette with <kbd>Space</kbd> or <kbd>Ctrl</kbd>+<kbd>K</kbd> to quickly find collections, filters, and settings. Inspired by Rofi and Wofi, it keeps everyday controls within reach, without digging through menus.
+
+### Your wallpapers, even offline
+
+Bring your own images into Isekai Tab. Import local wallpapers or entire folders, browse them in your personal library, and keep them stored securely in your browser with IndexedDB. Your collection is always available without an active internet connection.
+
+### A quieter canvas when you need it
+
+Press <kbd>I</kbd> to replace the wallpaper with a minimal dark canvas featuring the Isekai Tab crest. It's a visual mode for a cleaner screen, not the browser's private-browsing mode.
+
+---
+
+
+<h2 align="center" id="installation">Installation</h2>
+
+<p align="center">
+  Available for Firefox and Chromium-based browsers.
+</p>
+
+<table>
+  <tr>
+    <th align="center" width="50%">Firefox</th>
+    <th align="center" width="50%">Chromium</th>
+  </tr>
+  <tr>
+    <td align="center" valign="top">
+      <br />
+      <a href="https://addons.mozilla.org/firefox/addon/isekai-tab/">
+        <img
+          src="https://raw.githubusercontent.com/ZER0-X/badges/main/mozilla/firefox-addons/get-the-add-on.svg"
+          height="48"
+          alt="Get Isekai Tab on Firefox Add-ons"
+        />
+      </a>
+      <br /><br />
+      Install directly from the official
+      <a href="https://addons.mozilla.org/firefox/addon/isekai-tab/">Firefox Add-ons</a>
+      store.
+      <br /><br />
+      <sub>Also works with compatible Firefox-based browsers.</sub>
+      <br /><br />
+    </td>
+    <td align="center" valign="top">
+      <br />
+      <a href="https://github.com/urstark/isekai-tab/releases/latest">
+        <img
+          src="https://raw.githubusercontent.com/rukamori/ArchiveTune/refs/heads/main/assets/badge_github.png"
+          height="48"
+          alt="Get Isekai Tab on GitHub"
+        />
+      </a>
+      <br /><br />
+      Get the latest Chromium build from
+      <a href="https://github.com/urstark/isekai-tab/releases/latest">GitHub Releases</a>.
+      <br /><br />
+      <sub>Chrome Web Store release coming soon.</sub>
+      <br /><br />
+    </td>
+  </tr>
+</table>
 
 <details>
-<summary><b>Manual Installation for Chromium Browsers (Click to expand)</b></summary>
+<summary><b>Manual installation</b></summary>
 
 <br />
 
-1. Download `isekai-tab-chrome.zip` from the latest [GitHub Release](https://github.com/urstark/isekai-tab/releases/latest).
-2. Unzip the downloaded file into a folder of your choice.
-3. Open your browser's extension management page:
-   * **Chrome**: `chrome://extensions`
-   * **Helium**: `helium://extensions/`
-   * **Brave**: `brave://extensions`
-   * **Edge**: `edge://extensions`
-   * **Opera / Arc / Vivaldi**: Open extension settings
-4. Toggle on **Developer mode** in the top right corner.
-5. Click **Load unpacked** and select the unzipped directory.
-6. Open a new tab and enjoy 🌸
+**Chrome, Brave, Edge & other Chromium-based browsers**
+
+1. Download the `isekai-tab-*-chrome.zip` package from the latest [GitHub Release](https://github.com/urstark/isekai-tab/releases/latest).
+2. Extract the ZIP archive into a folder.
+3. Open your browser's extension management page (`chrome://extensions`, `brave://extensions`, or `edge://extensions`).
+4. Enable **Developer mode**.
+5. Click **Load unpacked** and select the extracted extension directory.
+
+**Firefox (temporary installation)**
+
+1. Download the `isekai-tab-*-firefox.zip` package from the latest [GitHub Release](https://github.com/urstark/isekai-tab/releases/latest).
+2. Extract the ZIP archive.
+3. Open `about:debugging#/runtime/this-firefox`.
+4. Click **Load Temporary Add-on**.
+5. Select the `manifest.json` file from the extracted extension directory.
+
+> **Note:** Temporary Firefox installations are removed when the browser restarts. For regular use, install Isekai Tab from [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/isekai-tab/).
 
 </details>
 
-### Build from Source
+---
+
+## Keyboard Shortcuts
+
+<div id="keyboard-shortcuts"></div>
+
+| Shortcut | Action |
+| :--- | :--- |
+| <kbd>Space</kbd> or <kbd>Ctrl</kbd>+<kbd>K</kbd> | Open the command palette |
+| <kbd>R</kbd> | Load a new wallpaper |
+| <kbd>P</kbd> | Pin or unpin the current wallpaper |
+| <kbd>N</kbd> | Toggle the NSFW filter |
+| <kbd>I</kbd> | Toggle the minimal dark canvas |
+| <kbd>M</kbd> | Open or close settings |
+| <kbd>Esc</kbd> | Close the active palette or panel |
+
+---
+
+## Privacy by Design
+
+Isekai Tab runs entirely client-side, with no account requirement, analytics, tracking, or telemetry built into the extension.
+
+Your settings, custom fonts, and imported wallpapers are stored locally in your browser using browser storage and IndexedDB. Online wallpaper feeds still require requests to their respective providers; those providers may process requests under their own privacy policies. Using an online wallpaper source is not the same as sending your personal library to an Isekai Tab server.
+
+The project is completely open source, so you can inspect how it works.
+
+---
+
+## Development
+
+<div id="development"></div>
+
+Isekai Tab is built with **Svelte 5**, **TypeScript**, and **WXT**. The project uses **pnpm** for package management.
 
 ```bash
-# Clone the repository
+# Clone the project
 git clone https://github.com/urstark/isekai-tab.git
 cd isekai-tab
 
 # Install dependencies
 pnpm install
 
-# Start development server with live reload
-pnpm dev
+# Start a development browser
+pnpm dev              # Chromium
+pnpm dev:firefox      # Firefox
 
-# Build production bundle
-pnpm build
+# Type check
+pnpm check
 
-# Or generate distributable zip packages
-pnpm zip          # Chrome MV3 (.output/isekai-tab-0.1.0-chrome.zip)
-pnpm zip:firefox  # Firefox MV2 (.output/isekai-tab-0.1.0-firefox.zip)
+# Build production extensions
+pnpm build            # Chromium
+pnpm build:firefox    # Firefox
+
+# Create distributable archives
+pnpm zip              # Chromium
+pnpm zip:firefox      # Firefox
 ```
 
----
-
-## Keyboard Shortcuts
-
-| Key | Action |
-| :--- | :--- |
-| <kbd>Space</kbd> / <kbd>Ctrl</kbd>+<kbd>K</kbd> | Open Command Palette (Rofi / Wofi style launcher) |
-| <kbd>R</kbd> | Reroll wallpaper with burst animation |
-| <kbd>P</kbd> | Pin current wallpaper (prevents automatic rotation) |
-| <kbd>N</kbd> | Toggle NSFW filter on / off |
-| <kbd>I</kbd> | Toggle Incognito privacy canvas |
-| <kbd>M</kbd> | Open / close settings drawer |
-| <kbd>Esc</kbd> | Close palette or settings drawer |
-
----
-
-## Privacy & Philosophy
-
-* **100% Client-Side**: No user accounts, analytics, tracking beacons, or third-party telemetries.
-* **Local Storage First**: Your history, favorites, custom images, and fonts live entirely inside your browser's `localStorage` and `IndexedDB`.
-* **Zero Bloat**: Fast startup with asynchronous background preloading so new tabs open instantly.
+Build outputs are generated by WXT under `.output/`; archive names depend on the package version and target browser.
 
 ---
 
 ## Contributing
 
-Contributions of all kinds are welcome! Check out the [Contributing Guide](CONTRIBUTING.md) to set up your local environment and view our [Code of Conduct](CODE_OF_CONDUCT.md).
+Ideas, bug reports, design improvements, documentation updates, and pull requests are welcome.
+
+Read the [Contributing Guide](CONTRIBUTING.md) before opening a pull request, and check the [Code of Conduct](CODE_OF_CONDUCT.md) for community expectations. For bugs and feature requests, open a discussion or report in [GitHub Issues](https://github.com/urstark/isekai-tab/issues).
 
 ---
 
-## 🎋 License
+## License
 
-Distributed under the [GPL-3.0-or-later](LICENSE) License.
+Isekai Tab is free and open source software under the [GPL-3.0-or-later](LICENSE) license.
+
+<br />
+
+<div align="center">
+  <b>Your new tab. Your own world.</b><br />
+  <sub>Made for the people who like their browser to feel personal.</sub>
+</div>
