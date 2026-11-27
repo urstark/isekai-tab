@@ -315,8 +315,8 @@
   }
 
   .waybar-hud-wrap.peeking {
-    opacity: 0.18;
-    transform: translateX(18px);
+    opacity: 0.62;
+    transform: translateX(10px);
   }
 
   .waybar-hud-wrap:hover,
@@ -370,7 +370,7 @@
     background: transparent;
     border: none;
     border-radius: 50%;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.78);
     cursor: pointer;
     outline: none;
     transition: color 0.15s ease, background-color 0.15s ease;
